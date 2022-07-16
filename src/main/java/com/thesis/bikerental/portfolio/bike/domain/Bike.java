@@ -1,8 +1,6 @@
 package com.thesis.bikerental.portfolio.bike.domain;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.thesis.bikerental.portfolio.store.domain.Store;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,10 +14,11 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Bike {
+@Builder
+public class Bike implements Comparable<Bike>{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 
@@ -47,6 +46,10 @@ public class Bike {
     @OneToMany(mappedBy = "bike")
     private List<BikePicture> bikePictures;
 
+    @ManyToOne
+    @JoinColumn(name = "assign_store")
+    private Store store;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
@@ -56,4 +59,9 @@ public class Bike {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
     private Date updated_at;
+
+    @Override
+    public int compareTo(Bike bike) {
+        return this.id - bike.getId();
+    }
 }
