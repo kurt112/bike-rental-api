@@ -1,0 +1,18 @@
+type Bike {
+    id: ID!
+    brand: String
+    createdAt: String
+    updatedAt: String
+    price: Float
+    quantity: Int
+    size: Int
+    name: String,
+    description: String,
+    available: Int,
+}
+
+
+type Query {
+    bikes(search:String, page: Int, size: Int, status: Int): [Bike]
+    bikeById(id:ID!): Bike
+}

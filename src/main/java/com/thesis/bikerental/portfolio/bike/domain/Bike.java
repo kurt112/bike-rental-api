@@ -20,7 +20,7 @@ public class Bike implements Comparable<Bike>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -62,6 +62,6 @@ public class Bike implements Comparable<Bike>{
 
     @Override
     public int compareTo(Bike bike) {
-        return this.id - bike.getId();
+        return (int)this.id - (int)bike.getId();
     }
 }

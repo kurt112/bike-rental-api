@@ -1,9 +1,6 @@
 package com.thesis.bikerental.utils;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +11,8 @@ import java.util.Map;
 @Service
 public class Jwt implements Serializable {
 
-    @Value("${secret.key}")
-    private String SECRET_KEY;
+//    @Value("${secret.key}")
+//    private String SECRET_KEY;
 //    public final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 //
 //    public String getUsername(String token) {
