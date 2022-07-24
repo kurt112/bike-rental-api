@@ -3,5 +3,5 @@ package com.thesis.bikerental.portfolio.employee.service;
 import com.thesis.bikerental.portfolio.employee.domain.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 }

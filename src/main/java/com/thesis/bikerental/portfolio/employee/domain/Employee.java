@@ -17,7 +17,7 @@ public class Employee implements Comparable<Employee>{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @OneToOne
     @JoinColumn(name = "user_id")
