@@ -29,6 +29,6 @@ public class Employee implements Comparable<Employee>{
 
     @Override
     public int compareTo(Employee employee) {
-        return this.id - employee.id;
+        return (int)(this.id - employee.id);
     }
 }

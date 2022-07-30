@@ -1,10 +1,7 @@
 package com.thesis.bikerental.portfolio.customer.domain;
 
 import com.thesis.bikerental.portfolio.user.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +14,8 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
+@ToString
 public class Customer {
 
     @Id
@@ -24,17 +23,22 @@ public class Customer {
     @Column(name = "id")
     private long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     @Column(name = "to_pay")
     private double toPay;
 
+    @Column(name = "is_active")
+    private boolean isMember;
+
     @Column(name = "last_billed")
-    private Date last_billed;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastBilled;
 
     @Column(name = "next_billed")
-    private Date next_billed;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date nextBilled;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -44,5 +48,5 @@ public class Customer {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private Date updated_at;
+    private Date updatedAt;
 }

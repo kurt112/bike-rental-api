@@ -30,14 +30,8 @@ public  class User implements Comparable<User> {
 
     @Column(name = "middle_name")
     private String middleName;
-
-    @Column(name = "picture",columnDefinition = "TEXT")
-    private String picture;
     @Column(name= "last_name")
     private String lastName;
-
-    @Column(name = "sufix")
-    private String suffix;
 
     @Column(name = "gender")
     private String gender;
@@ -74,7 +68,7 @@ public  class User implements Comparable<User> {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private Date updated_at;
+    private Date updatedAt;
 
     @Override
     public int compareTo(User o) {

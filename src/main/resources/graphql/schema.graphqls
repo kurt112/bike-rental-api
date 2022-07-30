@@ -11,8 +11,50 @@ type Bike {
     available: Int,
 }
 
+type User {
+    id: ID!
+    email: String
+    firstName: String
+    middleName: String
+    lastName: String
+    gender: String
+    password: String
+    birthdate: String
+    userRole: String
+    cellphone: String
+    isAccountNotExpired: Boolean
+    isAccountNotLocked: Boolean
+    isCredentialNotExpired: Boolean
+    isEnabled: Boolean
+    createdAt: String
+    updatedAt: String
+}
+
+type Customer {
+    id: ID!
+    user: User
+    toPay: Float
+    isMember: Boolean
+    lastBilled: String
+    nextBilled: String
+    createdAt: String
+    updatedAt: String
+}
+
+type Store {
+    id: ID!
+    bikes: [Bike]
+    name: String
+    longitude: String
+    latitude: String
+}
+
 
 type Query {
     bikes(search:String, page: Int, size: Int, status: Int): [Bike]
     bikeById(id:ID!): Bike
+    stores(search:String, page: Int, size: Int, status: Int): [Store]
+    storeById(id:ID!): Store
+    customers(search:String, page: Int, size: Int, status: Int): [Customer]
+    customerById(id:ID!):Customer
 }

@@ -46,7 +46,7 @@ public class BikeController {
     }
 
 
-    @SchemaMapping(typeName = "Query", value = "bike")
+    @SchemaMapping(typeName = "Query", value = "bikeById")
     public Bike bike(@Argument long id) {return bikeServiceImplementation.findById(id);}
 
 }
