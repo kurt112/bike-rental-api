@@ -20,7 +20,7 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id", unique = true, updatable = false)
     private long id;
 
     @OneToOne(cascade = CascadeType.ALL)

@@ -32,9 +32,10 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
+    @Transactional
     public Customer save(Customer customer) {
         try {
-            customerRepository.save(customer);
+            customerRepository.saveAndFlush(customer);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -42,10 +43,11 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
+    @Transactional
     public boolean deleteById(long id) {
         Customer customer = findById(id);
 
-        if(customer != null) return false;
+        if(customer == null) return false;
 
         customerRepository.deleteById(id);
 

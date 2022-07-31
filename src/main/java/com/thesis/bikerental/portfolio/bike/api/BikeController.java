@@ -32,7 +32,7 @@ public class BikeController {
     }
 
     @DeleteMapping
-    public ResponseEntity<HashMap<String, ?>> deleteBike(@RequestBody long id) {
+    public ResponseEntity<HashMap<String, ?>> deleteBike(@RequestParam long id) {
         HashMap<String, ?> content =  new HashMap<>();
         bikeServiceImplementation.deleteById(id);
 

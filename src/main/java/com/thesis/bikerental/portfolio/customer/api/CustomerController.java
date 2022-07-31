@@ -1,9 +1,9 @@
 package com.thesis.bikerental.portfolio.customer.api;
 
-import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.http.HttpStatus;
@@ -15,20 +15,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
+@RequiredArgsConstructor
 public class CustomerController {
 
-    private final CustomerServiceImpl service;
+    private final CustomerServiceImpl customerService;
+    private final UserServiceImpl userService;
 
-    @Autowired
-    public CustomerController(CustomerServiceImpl service) {
-        this.service = service;
-    }
-
-    @PutMapping
+    @PatchMapping
     public ResponseEntity<HashMap<String, ?>> updateCustomer(@RequestBody Customer customer){
         HashMap<String ,?> hashMap = new HashMap<>();
 
-        service.save(customer);
+        customerService.save(customer);
 
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
@@ -36,7 +33,8 @@ public class CustomerController {
     @DeleteMapping
     public ResponseEntity<HashMap<String, ?>> deleteCustomer(@RequestParam("id") long id){
         HashMap<String ,?> hashMap = new HashMap<>();
-        service.deleteById(id);
+
+        customerService.deleteById(id);
 
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
@@ -44,21 +42,24 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<HashMap<String, ?>> createCustomer(@RequestBody Customer customer){
         HashMap<String ,?> hashMap = new HashMap<>();
-        service.save(customer);
+        if(customer.getUser() != null){
+            userService.save(customer.getUser());
+        }
+        customerService.save(customer);
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 
     @SchemaMapping(typeName = "Query",value = "customers")
-    public List<Customer> getAllbike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
+    public List<Customer> getAllBike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
 
-        return service.data(search,page,size,status);
+        return customerService.data(search,page,size,status);
     }
 
 
     @SchemaMapping(typeName = "Query",value = "customerById")
     public Customer getCustomerById(@Argument long id){
 
-        return service.findById(id);
+        return customerService.findById(id);
     }
 
 
