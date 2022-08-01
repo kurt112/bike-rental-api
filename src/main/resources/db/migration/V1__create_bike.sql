@@ -1,0 +1,1 @@
+insert into store(id,longitude,latitude,name) values (1,'123212','23212','Default Name');

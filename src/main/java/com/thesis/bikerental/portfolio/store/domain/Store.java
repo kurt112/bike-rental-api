@@ -17,9 +17,9 @@ import java.util.Set;
 @Table(name = "store")
 public class Store implements Comparable<Store> {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @Column(name = "id", unique = true, updatable = false)
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -46,6 +46,6 @@ public class Store implements Comparable<Store> {
 
     @Override
     public int compareTo(Store store) {
-        return this.id - store.id;
+        return (int)(this.id - store.id);
     }
 }

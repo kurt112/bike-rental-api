@@ -1,6 +1,5 @@
 package com.thesis.bikerental.portfolio.store.api;
 
-import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.store.domain.Store;
 import com.thesis.bikerental.portfolio.store.service.StoreServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +38,9 @@ public class StoreController {
     }
 
     @PostMapping
-    public ResponseEntity<HashMap<String, ?>> createStore(){
+    public ResponseEntity<HashMap<String, ?>> createStore(@RequestBody Store store){
         HashMap<String ,?> hashMap = new HashMap<>();
+        storeService.save(store);
 
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
