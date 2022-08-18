@@ -2,7 +2,10 @@ package com.thesis.bikerental.portfolio.employee.service;
 
 import com.thesis.bikerental.portfolio.employee.domain.Employee;
 import com.thesis.bikerental.utils.api.ApiSettings;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -11,19 +14,16 @@ import java.util.Optional;
 
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService{
 
     private final EmployeeRepository employeeRepository;
 
-    @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
-
-
     @Override
     public List<Employee> data(String search, int page, int size, int status) {
-        return null;
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Employee> pages = employeeRepository.findAll(pageable);
+        return pages.getContent();
     }
 
     @Override

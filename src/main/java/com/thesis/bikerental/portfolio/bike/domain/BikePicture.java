@@ -1,9 +1,6 @@
 package com.thesis.bikerental.portfolio.bike.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,19 +10,20 @@ import javax.persistence.*;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class BikePicture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "bike", nullable = false)
     private Bike bike;
 
     @Lob
-    @Column( name = "image", columnDefinition = "BLOB", nullable = true)
+    @Column( name = "image")
     @Basic(fetch = FetchType.LAZY)
     private byte[] image;
 }

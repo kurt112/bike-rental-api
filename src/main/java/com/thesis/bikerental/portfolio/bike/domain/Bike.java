@@ -43,7 +43,7 @@ public class Bike implements Comparable<Bike>{
     @Column(name = "quantity")
     private int quantity;
 
-    @OneToMany(mappedBy = "bike")
+    @OneToMany(mappedBy = "bike", cascade = CascadeType.ALL)
     private List<BikePicture> bikePictures;
 
     @ManyToOne
