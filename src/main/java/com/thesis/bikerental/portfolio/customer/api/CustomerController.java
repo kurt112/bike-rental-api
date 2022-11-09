@@ -9,7 +9,7 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,6 +43,7 @@ public class CustomerController {
     public ResponseEntity<HashMap<String, ?>> createCustomer(@RequestBody Customer customer){
         HashMap<String ,?> hashMap = new HashMap<>();
         if(customer.getUser() != null){
+            customer.getUser().setPassword(new BCryptPasswordEncoder().encode(customer.getUser().getPassword()));
             userService.save(customer.getUser());
         }
         customerService.save(customer);

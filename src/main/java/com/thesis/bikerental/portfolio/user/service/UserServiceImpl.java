@@ -51,4 +51,9 @@ public class UserServiceImpl implements UserService{
     public long count() {
         return 0;
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

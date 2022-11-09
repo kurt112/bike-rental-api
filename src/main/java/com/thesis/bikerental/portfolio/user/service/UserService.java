@@ -6,4 +6,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService extends ServiceGraphQL<User> {
+    User findByEmail(String email);
 }

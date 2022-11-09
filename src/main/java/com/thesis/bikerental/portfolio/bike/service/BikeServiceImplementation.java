@@ -94,4 +94,20 @@ public class BikeServiceImplementation implements BikeService {
 
         return bikePictureData;
     }
+
+    @Override
+    public List<Bike> getBikeRented() {
+        /**
+         * TODO: get the token of the user
+         */
+        return null;
+    }
+
+    @Override
+    public List<Bike> getBikeRequested() {
+        /**
+         * TODO: get the token of the user
+         */
+        return null;
+    }
 }

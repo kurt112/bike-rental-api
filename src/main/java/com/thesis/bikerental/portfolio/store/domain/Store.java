@@ -19,7 +19,6 @@ import java.util.Set;
 public class Store implements Comparable<Store> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", unique = true, updatable = false)
     private long id;
 
     @Column(name = "name")
@@ -50,8 +49,8 @@ public class Store implements Comparable<Store> {
     @OneToMany(mappedBy = "currentAssign")
     private Set<Employee> employees;
 
-    @OneToMany(mappedBy = "store")
-    private Set<Bike> bikes;
+//    @OneToMany(mappedBy = "store")
+//    private Set<Bike> bikes;
 
 
     @Override

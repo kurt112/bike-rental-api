@@ -69,9 +69,31 @@ public class BikeController {
         return new ResponseEntity<>(content,HttpStatus.OK);
     }
 
+    @PostMapping("/available")
+    public List<Bike> getAvailableBike(@Argument String search, @Argument int page, @Argument int size, @Argument int status) {
+
+
+        return bikeServiceImplementation.data(search,page,size,status);
+    }
+
+    @PostMapping("/rented")
+    public List<Bike> getAvailableBikeRented(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
+
+
+        return bikeServiceImplementation.data(search,page,size,status);
+    }
+
+    @PostMapping("/requested")
+    public List<Bike> getAvailableBikeRequested(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
+
+
+        return bikeServiceImplementation.data(search,page,size,status);
+    }
+
+
 
     @SchemaMapping(typeName = "Query",value = "bikes")
-    public List<Bike> getAllbike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
+        public List<Bike> getAllbike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
 
         return bikeServiceImplementation.data(search,page,size,status);
     }
