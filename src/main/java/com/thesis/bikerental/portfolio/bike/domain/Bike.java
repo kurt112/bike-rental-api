@@ -1,4 +1,5 @@
 package com.thesis.bikerental.portfolio.bike.domain;
+import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.store.domain.Store;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,39 +16,43 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Builder
-public class Bike implements Comparable<Bike>{
+@ToString
+public class Bike implements Comparable<Bike>, Cloneable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "code", nullable = false)
+    private String code;
     private String name;
-
-    @Column(name = "price")
     private double price;
-
-    @Column(name = "brand")
     private String brand;
-
-    @Column(name = "size")
     private double size;
-
-    @Column(name = "description")
     private String description;
+    private long quantity;
 
-    @Column(name = "available")
+    /**
+     * 0 = not rented
+     * 1 = for request
+     * 2 = rented
+     * -1 = not available
+     */
+    private int status;
+
     private boolean available;
 
-    @Column(name = "quantity")
-    private int quantity;
-
-    @OneToMany(mappedBy = "bike", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bike", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<BikePicture> bikePictures;
 
     @ManyToOne
     @JoinColumn(name = "assign_store")
     private Store store;
+
+    // will null if the customer is blank
+    @ManyToOne
+    @JoinColumn(name = "assigned_customer")
+    private Customer assignedCustomer;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -62,5 +67,10 @@ public class Bike implements Comparable<Bike>{
     @Override
     public int compareTo(Bike bike) {
         return (int)this.id - (int)bike.getId();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

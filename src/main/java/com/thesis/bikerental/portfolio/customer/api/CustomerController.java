@@ -1,7 +1,7 @@
 package com.thesis.bikerental.portfolio.customer.api;
 
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
-import com.thesis.bikerental.portfolio.customer.service.CustomerServiceImpl;
+import com.thesis.bikerental.portfolio.customer.service.CustomerService;
 import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerController {
 
-    private final CustomerServiceImpl customerService;
+    private final CustomerService customerService;
     private final UserServiceImpl userService;
 
     @PatchMapping
@@ -48,6 +48,16 @@ public class CustomerController {
         }
         customerService.save(customer);
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
+    }
+
+    @GetMapping("/settings")
+    public ResponseEntity<?> settings() {
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.putIfAbsent("data", customerService.apiSettings());
+
+
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
     @SchemaMapping(typeName = "Query",value = "customers")

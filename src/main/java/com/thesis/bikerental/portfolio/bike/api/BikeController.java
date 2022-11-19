@@ -5,6 +5,7 @@ import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
 import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
 import com.thesis.bikerental.portfolio.bike.service.BikeServiceImplementation;
+import com.thesis.bikerental.utils.api.ApiSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -28,9 +29,13 @@ public class BikeController {
     }
 
     @PostMapping
-    public ResponseEntity<HashMap<String, ?>> createBike(@RequestBody Bike bike) {
-        HashMap<String, ?> content =  new HashMap<>();
+    public ResponseEntity<HashMap<String, ?>> createBike(@RequestBody Bike bike) throws CloneNotSupportedException {
+
+        HashMap<String, Object> content =  new HashMap<>();
+
         bikeServiceImplementation.save(bike);
+
+        content.put("data",bike);
 
         return new ResponseEntity<>(content,HttpStatus.OK);
     }
@@ -90,12 +95,34 @@ public class BikeController {
         return bikeServiceImplementation.data(search,page,size,status);
     }
 
+    @GetMapping("/settings")
+    public ResponseEntity<?> settings() {
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.putIfAbsent("data", bikeServiceImplementation.apiSettings());
+
+
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+
 
 
     @SchemaMapping(typeName = "Query",value = "bikes")
         public List<Bike> getAllbike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
-
         return bikeServiceImplementation.data(search,page,size,status);
+    }
+
+    @SchemaMapping(typeName = "Query",value = "getBikeByCustomerRented")
+    public List<Bike> getBikeRentedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument String token){
+
+        return bikeServiceImplementation.getBikeRentedByCustomer(search,page,size,token);
+    }
+
+    @SchemaMapping(typeName = "Query",value = "getBikeByCustomer")
+    public List<Bike> getBikeRequestedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument String token){
+
+        return bikeServiceImplementation.getBikeRequestedByCustomer(search,page,size, token);
     }
 
 

@@ -3,9 +3,11 @@ package com.thesis.bikerental.portfolio.bike.service;
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
 import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
+import com.thesis.bikerental.portfolio.customer.service.CustomerRepository;
+import com.thesis.bikerental.utils.Jwt;
 import com.thesis.bikerental.utils.api.ApiSettings;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.engine.jdbc.BlobProxy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,25 +20,25 @@ import java.util.Optional;
 
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class BikeServiceImplementation implements BikeService {
 
     private final BikeRepository repository;
     private final BikePictureRepository bikePictureRepository;
+    private final CustomerRepository customerRepository;
+    private final Jwt jwt;
 
-    private int totalPages = 0;
-    private long totalElements = 0;
-    private int currentPages = 0;
+    private ApiSettings apiSettings = new ApiSettings(0,0,0,0,0);
 
-    @Autowired
-    public BikeServiceImplementation(BikeRepository repository, BikePictureRepository bikePictureRepository) {
-        this.repository = repository;
-        this.bikePictureRepository = bikePictureRepository;
-    }
 
+    //available
     @Override
     public List<Bike> data (String search, int page, int size, int status) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Bike> pages = repository.findAll(pageable);
+        Pageable pageable = PageRequest.of(page-1,size);
+        Page<Bike> pages = repository.getAllBike(status,search,pageable);
+
+        apiSettings.initApiSettings(size,page,pages.getTotalPages(),pages.getTotalElements());
+
         return pages.getContent();
     }
 
@@ -67,7 +69,6 @@ public class BikeServiceImplementation implements BikeService {
     public Bike findById(long id) {
         Optional<Bike> bike = repository.findById(id);
         if(!bike.isEmpty()){
-//            bike.get().setObject();
             System.out.println(BlobProxy.generateProxy(bike.get().getBikePictures().get(0).getImage()).toString());
         }
         return bike.orElse(null);
@@ -75,7 +76,7 @@ public class BikeServiceImplementation implements BikeService {
 
     @Override
     public ApiSettings apiSettings() {
-        return null;
+        return apiSettings;
     }
 
     @Override
@@ -96,18 +97,27 @@ public class BikeServiceImplementation implements BikeService {
     }
 
     @Override
-    public List<Bike> getBikeRented() {
-        /**
-         * TODO: get the token of the user
-         */
-        return null;
+    public List<Bike> getBikeRentedByCustomer(String search, int page, int size, String token) {
+        Pageable pageable = PageRequest.of(page,size);
+
+        String email = jwt.getUsername(token);
+
+        Page<Bike> pages = repository.getBikeCustomer(pageable,search, 2, email);
+
+
+        return pages.getContent();
     }
 
     @Override
-    public List<Bike> getBikeRequested() {
+    public List<Bike> getBikeRequestedByCustomer(String search, int page, int size, String token) {
         /**
          * TODO: get the token of the user
          */
-        return null;
+        Pageable pageable = PageRequest.of(page,size);
+
+        String email = jwt.getUsername(token);
+        Page<Bike> pages = repository.getBikeCustomer(pageable,search, 1,email);
+
+        return pages.getContent();
     }
 }

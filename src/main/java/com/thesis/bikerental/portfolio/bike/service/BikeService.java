@@ -13,7 +13,7 @@ public interface BikeService extends ServiceGraphQL<Bike> {
 
     BikePictureData getBikeImage(long pirctureId);
 
-    List<Bike> getBikeRented();
-    List<Bike> getBikeRequested();
+    List<Bike> getBikeRentedByCustomer(String search, int page, int size, String token);
+    List<Bike> getBikeRequestedByCustomer(String search, int page, int size, String token);
 
 }

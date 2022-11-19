@@ -14,7 +14,9 @@ type Bike {
     name: String,
     description: String,
     available: Int,
-    bikePictures: [BikePicture]
+    bikePictures: [BikePicture],
+    assignedCustomer: Customer,
+    code: String
 }
 
 type User {
@@ -73,4 +75,6 @@ type Query {
     customerById(id:ID!):Customer
     employees(search:String, page: Int, size: Int, status: Int): [Employee]
     employeeById(id:ID!):Employee
+    getBikeByCustomerRented(search:String, page: Int, size: Int, token: String): [Bike]
+    getBikeByCustomer(search:String, page: Int, size: Int, token: String):[Bike]
 }

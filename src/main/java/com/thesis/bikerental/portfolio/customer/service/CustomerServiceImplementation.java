@@ -2,7 +2,7 @@ package com.thesis.bikerental.portfolio.customer.service;
 
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.utils.api.ApiSettings;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,23 +11,23 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
 @Transactional
 @Service
-public class CustomerServiceImpl implements CustomerService{
+@RequiredArgsConstructor
+public class CustomerServiceImplementation implements CustomerService{
 
     private final CustomerRepository customerRepository;
 
-    @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
-
+    private ApiSettings apiSettings = new ApiSettings(0,0,0,0,0);
 
     @Override
     public List<Customer> data(String search, int page, int size, int status) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Customer> pages = customerRepository.findAll(pageable);
+        Pageable pageable = PageRequest.of(page-1,size);
+
+        Page<Customer> pages = customerRepository.getAllCustomer(status,search,pageable);
+
+        apiSettings.initApiSettings(size,page,pages.getTotalPages(),pages.getTotalElements());
+
         return pages.getContent();
     }
 
@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public ApiSettings apiSettings() {
-        return null;
+        return apiSettings;
     }
 
     @Override
