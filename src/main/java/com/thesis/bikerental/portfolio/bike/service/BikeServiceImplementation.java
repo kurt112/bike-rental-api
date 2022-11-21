@@ -3,7 +3,10 @@ package com.thesis.bikerental.portfolio.bike.service;
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
 import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
+import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerRepository;
+import com.thesis.bikerental.portfolio.user.domain.User;
+import com.thesis.bikerental.portfolio.user.service.UserRepository;
 import com.thesis.bikerental.utils.Jwt;
 import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 
 import javax.transaction.Transactional;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +27,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BikeServiceImplementation implements BikeService {
 
-    private final BikeRepository repository;
+    private final BikeRepository bikeRepository;
     private final BikePictureRepository bikePictureRepository;
     private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
+
     private final Jwt jwt;
 
     private ApiSettings apiSettings = new ApiSettings(0,0,0,0,0);
@@ -35,7 +41,7 @@ public class BikeServiceImplementation implements BikeService {
     @Override
     public List<Bike> data (String search, int page, int size, int status) {
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Bike> pages = repository.getAllBike(status,search,pageable);
+        Page<Bike> pages = bikeRepository.getAllBike(status,search,pageable);
 
         apiSettings.initApiSettings(size,page,pages.getTotalPages(),pages.getTotalElements());
 
@@ -45,7 +51,7 @@ public class BikeServiceImplementation implements BikeService {
     @Override
     public Bike save(Bike bike) {
         try {
-            repository.save(bike);
+            bikeRepository.save(bike);
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -56,18 +62,18 @@ public class BikeServiceImplementation implements BikeService {
     @Override
     public boolean deleteById(long id) {
 
-        Optional<Bike> bike = repository.findById(id);
+        Optional<Bike> bike = bikeRepository.findById(id);
 
         if(bike.isEmpty()) return false;
 
-        repository.deleteById(bike.get().getId());
+        bikeRepository.deleteById(bike.get().getId());
 
         return true;
     }
 
     @Override
     public Bike findById(long id) {
-        Optional<Bike> bike = repository.findById(id);
+        Optional<Bike> bike = bikeRepository.findById(id);
         if(!bike.isEmpty()){
             System.out.println(BlobProxy.generateProxy(bike.get().getBikePictures().get(0).getImage()).toString());
         }
@@ -102,7 +108,7 @@ public class BikeServiceImplementation implements BikeService {
 
         String email = jwt.getUsername(token);
 
-        Page<Bike> pages = repository.getBikeCustomer(pageable,search, 2, email);
+        Page<Bike> pages = bikeRepository.getBikeCustomer(pageable,search, 2, email);
 
 
         return pages.getContent();
@@ -116,8 +122,36 @@ public class BikeServiceImplementation implements BikeService {
         Pageable pageable = PageRequest.of(page,size);
 
         String email = jwt.getUsername(token);
-        Page<Bike> pages = repository.getBikeCustomer(pageable,search, 1,email);
+        Page<Bike> pages = bikeRepository.getBikeCustomer(pageable,search, 1,email);
 
         return pages.getContent();
+    }
+
+    @Override
+    public Boolean rentBikeByCustomer(String token, long bikeId) {
+
+        String email = jwt.getUsername(token);
+
+        if(email == null) return false;
+
+        User user = userRepository.findByEmail(email);
+
+        if(user == null) return false;
+
+        Bike bike = bikeRepository.findById(bikeId).orElse(null);
+
+        if(bike == null) return false;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 15);
+
+        Customer customer = user.getCustomer();
+
+        customer.setNextBilled(calendar.getTime());
+
+        bike.setAssignedCustomer(customer);
+        bike.setStatus(bike.getBikeStatus(Bike.Status.RENTED));
+
+        return true;
     }
 }

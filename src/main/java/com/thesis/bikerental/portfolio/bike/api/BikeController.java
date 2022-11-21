@@ -4,8 +4,14 @@ package com.thesis.bikerental.portfolio.bike.api;
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
 import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
+import com.thesis.bikerental.portfolio.bike.service.BikeService;
 import com.thesis.bikerental.portfolio.bike.service.BikeServiceImplementation;
+import com.thesis.bikerental.portfolio.customer.service.CustomerService;
+import com.thesis.bikerental.portfolio.user.domain.User;
+import com.thesis.bikerental.portfolio.user.service.UserService;
+import com.thesis.bikerental.utils.Jwt;
 import com.thesis.bikerental.utils.api.ApiSettings;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -20,20 +26,19 @@ import java.util.List;
 
 @RequestMapping("/bike")
 @RestController
+@RequiredArgsConstructor
 public class BikeController {
-    private final BikeServiceImplementation bikeServiceImplementation;
+    private final BikeService bikeService;
 
-    @Autowired
-    public BikeController(BikeServiceImplementation bikeServiceImplementation) {
-        this.bikeServiceImplementation = bikeServiceImplementation;
-    }
+    private final Jwt jwt;
+
 
     @PostMapping
     public ResponseEntity<HashMap<String, ?>> createBike(@RequestBody Bike bike) throws CloneNotSupportedException {
 
         HashMap<String, Object> content =  new HashMap<>();
 
-        bikeServiceImplementation.save(bike);
+        bikeService.save(bike);
 
         content.put("data",bike);
 
@@ -43,7 +48,7 @@ public class BikeController {
     @DeleteMapping
     public ResponseEntity<HashMap<String, ?>> deleteBike(@RequestParam long id) {
         HashMap<String, ?> content =  new HashMap<>();
-        bikeServiceImplementation.deleteById(id);
+        bikeService.deleteById(id);
 
         return new ResponseEntity<>(content,HttpStatus.OK);
     }
@@ -51,13 +56,13 @@ public class BikeController {
     @PostMapping("/photo")
     public ResponseEntity<HashMap<String, ?>> deleteBike(@RequestBody MultipartFile photo) {
         HashMap<String, ?> content =  new HashMap<>();
-        Bike bike = bikeServiceImplementation.findById(3);
+        Bike bike = bikeService.findById(3);
 
         try {
             byte bikePhoto[]=photo.getBytes();
             BikePicture bikePicture = BikePicture.builder().bike(bike).image(bikePhoto).build();
             bike.getBikePictures().add(bikePicture);
-            bikeServiceImplementation.save(bike);
+            bikeService.save(bike);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,7 +72,7 @@ public class BikeController {
     @GetMapping("/photo")
     public ResponseEntity<HashMap<String, ?>> getBikePicture(@RequestParam ("id") long id) {
         HashMap<String, BikePictureData> content =  new HashMap<>();
-        BikePictureData bikePicture = bikeServiceImplementation.getBikeImage(id);
+        BikePictureData bikePicture = bikeService.getBikeImage(id);
 
         content.put("picture", bikePicture);
 
@@ -78,28 +83,38 @@ public class BikeController {
     public List<Bike> getAvailableBike(@Argument String search, @Argument int page, @Argument int size, @Argument int status) {
 
 
-        return bikeServiceImplementation.data(search,page,size,status);
+        return bikeService.data(search,page,size,status);
     }
 
     @PostMapping("/rented")
     public List<Bike> getAvailableBikeRented(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
 
 
-        return bikeServiceImplementation.data(search,page,size,status);
+        return bikeService.data(search,page,size,status);
     }
 
     @PostMapping("/requested")
     public List<Bike> getAvailableBikeRequested(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
 
 
-        return bikeServiceImplementation.data(search,page,size,status);
+        return bikeService.data(search,page,size,status);
     }
 
     @GetMapping("/settings")
     public ResponseEntity<?> settings() {
 
         HashMap<String, Object> result = new HashMap<>();
-        result.putIfAbsent("data", bikeServiceImplementation.apiSettings());
+        result.putIfAbsent("data", bikeService.apiSettings());
+
+
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @PostMapping("/rent")
+    public ResponseEntity<?> rentBikeByCustomer(@RequestParam("token") String token, @RequestParam("bike-id") long id){
+        HashMap<String, Object> result = new HashMap<>();
+
+
 
 
         return new ResponseEntity<>(result,HttpStatus.OK);
@@ -110,23 +125,23 @@ public class BikeController {
 
     @SchemaMapping(typeName = "Query",value = "bikes")
         public List<Bike> getAllbike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
-        return bikeServiceImplementation.data(search,page,size,status);
+        return bikeService.data(search,page,size,status);
     }
 
     @SchemaMapping(typeName = "Query",value = "getBikeByCustomerRented")
     public List<Bike> getBikeRentedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument String token){
 
-        return bikeServiceImplementation.getBikeRentedByCustomer(search,page,size,token);
+        return bikeService.getBikeRentedByCustomer(search,page,size,token);
     }
 
     @SchemaMapping(typeName = "Query",value = "getBikeByCustomer")
     public List<Bike> getBikeRequestedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument String token){
 
-        return bikeServiceImplementation.getBikeRequestedByCustomer(search,page,size, token);
+        return bikeService.getBikeRequestedByCustomer(search,page,size, token);
     }
 
 
     @SchemaMapping(typeName = "Query", value = "bikeById")
-    public Bike bike(@Argument long id) {return bikeServiceImplementation.findById(id);}
+    public Bike bike(@Argument long id) {return bikeService.findById(id);}
 
 }

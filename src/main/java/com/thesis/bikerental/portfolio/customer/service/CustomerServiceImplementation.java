@@ -24,7 +24,7 @@ public class CustomerServiceImplementation implements CustomerService{
     public List<Customer> data(String search, int page, int size, int status) {
         Pageable pageable = PageRequest.of(page-1,size);
 
-        Page<Customer> pages = customerRepository.getAllCustomer(status,search,pageable);
+        Page<Customer> pages = customerRepository.getCustomers(search,pageable);
 
         apiSettings.initApiSettings(size,page,pages.getTotalPages(),pages.getTotalElements());
 

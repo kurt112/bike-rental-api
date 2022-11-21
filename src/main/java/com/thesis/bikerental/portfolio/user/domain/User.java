@@ -2,6 +2,7 @@ package com.thesis.bikerental.portfolio.user.domain;
 
 
 
+import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -70,11 +71,12 @@ public  class User implements Comparable<User> {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @OneToOne(mappedBy = "user")
+    private Customer customer;
+
     @Override
     public int compareTo(User o) {
 
         return o.getLastName().compareToIgnoreCase(lastName);
     }
-
-
 }

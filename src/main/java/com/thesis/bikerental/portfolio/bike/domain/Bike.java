@@ -32,12 +32,6 @@ public class Bike implements Comparable<Bike>, Cloneable{
     private String description;
     private long quantity;
 
-    /**
-     * 0 = not rented
-     * 1 = for request
-     * 2 = rented
-     * -1 = not available
-     */
     private int status;
 
     private boolean available;
@@ -73,4 +67,29 @@ public class Bike implements Comparable<Bike>, Cloneable{
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    public int getBikeStatus(Status status){
+         switch (status){
+             case NOT_RENTED: return 0;
+             case FOR_REQUEST: return 1;
+             case RENTED: return 2;
+             case NOT_AVAILABLE: return -1;
+        }
+
+        return -2;
+    }
+
+    /**
+     * 0 = not rented
+     * 1 = for request
+     * 2 = rented
+     * -1 = not available
+     */
+    public static enum Status {
+        NOT_RENTED,
+        FOR_REQUEST,
+        RENTED,
+        NOT_AVAILABLE
+    }
+
 }

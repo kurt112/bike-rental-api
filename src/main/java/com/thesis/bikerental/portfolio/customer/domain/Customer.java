@@ -26,11 +26,11 @@ public class Customer {
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @Column(name = "to_pay")
+    @Column(name = "to_pay", columnDefinition="Decimal(10,2)")
     private double toPay;
 
     @Column(name = "is_active")
-    private boolean isMember;
+    private boolean isActive;
 
     @Column(name = "last_billed")
     @Temporal(TemporalType.TIMESTAMP)
