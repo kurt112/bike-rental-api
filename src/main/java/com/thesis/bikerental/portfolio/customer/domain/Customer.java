@@ -19,7 +19,7 @@ import java.util.Date;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", unique = true, updatable = false)
     private long id;
 

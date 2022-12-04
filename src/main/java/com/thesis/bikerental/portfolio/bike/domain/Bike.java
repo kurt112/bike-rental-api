@@ -68,7 +68,7 @@ public class Bike implements Comparable<Bike>, Cloneable{
         return super.clone();
     }
 
-    public int getBikeStatus(Status status){
+    public static int getBikeStatus(Status status){
          switch (status){
              case NOT_RENTED: return 0;
              case FOR_REQUEST: return 1;
@@ -85,7 +85,7 @@ public class Bike implements Comparable<Bike>, Cloneable{
      * 2 = rented
      * -1 = not available
      */
-    public static enum Status {
+    public enum Status {
         NOT_RENTED,
         FOR_REQUEST,
         RENTED,

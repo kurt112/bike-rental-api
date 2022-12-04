@@ -18,11 +18,14 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService{
 
     private final EmployeeRepository employeeRepository;
+    private final ApiSettings apiSettings = new ApiSettings(0,0,0,0,0);
 
     @Override
     public List<Employee> data(String search, int page, int size, int status) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Employee> pages = employeeRepository.findAll(pageable);
+        Pageable pageable = PageRequest.of(page-1,size);
+        Page<Employee> pages = employeeRepository.getEmployees(search,pageable);
+        System.out.println(pages.getContent());
+        apiSettings.initApiSettings(size,page,pages.getTotalPages(),pages.getTotalElements());
         return pages.getContent();
     }
 
@@ -55,7 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public ApiSettings apiSettings() {
-        return null;
+        return apiSettings;
     }
 
     @Override

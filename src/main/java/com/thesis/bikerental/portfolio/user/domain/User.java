@@ -21,7 +21,7 @@ public  class User implements Comparable<User> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Column(name = "email")
     private String email;

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User findById(long id) {
-        return null;
+        Optional<User> user = userRepository.findById(id);
+        return user.orElse(null);
     }
 
     @Override

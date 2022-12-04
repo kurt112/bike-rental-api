@@ -75,7 +75,7 @@ public class BikeServiceImplementation implements BikeService {
     public Bike findById(long id) {
         Optional<Bike> bike = bikeRepository.findById(id);
         if(!bike.isEmpty()){
-            System.out.println(BlobProxy.generateProxy(bike.get().getBikePictures().get(0).getImage()).toString());
+//            System.out.println(BlobProxy.generateProxy(bike.get().getBikePictures().get(0).getImage()).toString());
         }
         return bike.orElse(null);
     }

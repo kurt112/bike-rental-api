@@ -27,6 +27,8 @@ public class Employee implements Comparable<Employee>{
     @ManyToOne()
     private Store currentAssign;
 
+    private boolean isActive;
+
     @Override
     public int compareTo(Employee employee) {
         return (int)(this.id - employee.id);

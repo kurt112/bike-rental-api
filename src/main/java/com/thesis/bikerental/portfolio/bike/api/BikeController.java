@@ -5,14 +5,10 @@ import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
 import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
 import com.thesis.bikerental.portfolio.bike.service.BikeService;
-import com.thesis.bikerental.portfolio.bike.service.BikeServiceImplementation;
-import com.thesis.bikerental.portfolio.customer.service.CustomerService;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserService;
 import com.thesis.bikerental.utils.Jwt;
-import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.http.HttpStatus;
@@ -29,12 +25,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BikeController {
     private final BikeService bikeService;
+    private final UserService userService;
 
     private final Jwt jwt;
 
 
     @PostMapping
-    public ResponseEntity<HashMap<String, ?>> createBike(@RequestBody Bike bike) throws CloneNotSupportedException {
+    public ResponseEntity<HashMap<String, ?>> createBike(@RequestBody Bike bike) {
 
         HashMap<String, Object> content =  new HashMap<>();
 
@@ -54,9 +51,11 @@ public class BikeController {
     }
 
     @PostMapping("/photo")
-    public ResponseEntity<HashMap<String, ?>> deleteBike(@RequestBody MultipartFile photo) {
+    public ResponseEntity<HashMap<String, ?>> uploadBikePicture(@RequestBody MultipartFile photo, @RequestParam("bike-id") long id) {
+        System.out.println("The bike ID ");
+        System.out.println(id);
         HashMap<String, ?> content =  new HashMap<>();
-        Bike bike = bikeService.findById(3);
+        Bike bike = bikeService.findById(id);
 
         try {
             byte bikePhoto[]=photo.getBytes();
@@ -87,14 +86,14 @@ public class BikeController {
     }
 
     @PostMapping("/rented")
-    public List<Bike> getAvailableBikeRented(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
+    public List<Bike> getAllBikeRentedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
 
 
         return bikeService.data(search,page,size,status);
     }
 
     @PostMapping("/requested")
-    public List<Bike> getAvailableBikeRequested(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
+    public List<Bike> getAllBikeRequested(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
 
 
         return bikeService.data(search,page,size,status);
@@ -110,21 +109,41 @@ public class BikeController {
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
-    @PostMapping("/rent")
-    public ResponseEntity<?> rentBikeByCustomer(@RequestParam("token") String token, @RequestParam("bike-id") long id){
+    @PostMapping("/request/approved")
+    public ResponseEntity<?> approveRequest(@RequestParam("userId") long userId, @RequestParam("bikeId") long bikeId){
         HashMap<String, Object> result = new HashMap<>();
 
+        User user = userService.findById(userId);
+
+        System.out.println("the user ");
+
+        if(user == null){
+            result.put("message","No user Found");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+
+        Bike bike = bikeService.findById(bikeId);
+        if(bike == null){
+            result.put("message", "No bike Found");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
 
 
 
-        return new ResponseEntity<>(result,HttpStatus.OK);
+        bike.setStatus(Bike.getBikeStatus(Bike.Status.RENTED));
+        bike.setAssignedCustomer(user.getCustomer());
+
+        bikeService.save(bike);
+        result.put("message", "Bike request success");
+
+        return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
     }
 
 
 
 
     @SchemaMapping(typeName = "Query",value = "bikes")
-        public List<Bike> getAllbike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
+        public List<Bike> getAllBike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
         return bikeService.data(search,page,size,status);
     }
 

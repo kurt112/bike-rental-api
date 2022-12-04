@@ -1,7 +1,7 @@
 package com.thesis.bikerental.portfolio.employee.api;
 
 import com.thesis.bikerental.portfolio.employee.domain.Employee;
-import com.thesis.bikerental.portfolio.employee.service.EmployeeServiceImpl;
+import com.thesis.bikerental.portfolio.employee.service.EmployeeService;
 import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    private final EmployeeServiceImpl employeeService;
+    private final EmployeeService employeeService;
     private final UserServiceImpl userService;
 
 
@@ -64,6 +64,16 @@ public class EmployeeController {
     public Employee getEmployeeById(@Argument long id){
 
         return employeeService.findById(id);
+    }
+
+    @GetMapping("/settings")
+    public ResponseEntity<?> settings() {
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.putIfAbsent("data", employeeService.apiSettings());
+
+
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
 

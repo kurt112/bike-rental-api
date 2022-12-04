@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    @Query(value = "SELECT c from Customer c where c.isActive = true and c.user.firstName like  %:search%")
+    @Query(value = "SELECT c FROM Customer c WHERE c.isActive = true AND c.user.firstName LIKE  %:search% ORDER BY c.toPay DESC")
     Page<Customer> getCustomers(@Param("search") String search, Pageable pageable);
 }

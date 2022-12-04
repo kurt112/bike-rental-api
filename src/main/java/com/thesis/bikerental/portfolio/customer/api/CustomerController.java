@@ -1,5 +1,7 @@
 package com.thesis.bikerental.portfolio.customer.api;
 
+import com.thesis.bikerental.portfolio.bike.domain.Bike;
+import com.thesis.bikerental.portfolio.bike.service.BikeService;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerService;
 import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
@@ -20,6 +22,7 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final UserServiceImpl userService;
+    private final BikeService bikeService;
 
     @PatchMapping
     public ResponseEntity<HashMap<String, ?>> updateCustomer(@RequestBody Customer customer){
@@ -60,6 +63,21 @@ public class CustomerController {
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
+    @PostMapping("/rented")
+    public List<Bike> getAllBikeRentedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
+
+
+        return bikeService.data(search,page,size,status);
+    }
+
+    @PostMapping("/requested")
+    public List<Bike> getAllBikeRequested(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
+
+
+        return bikeService.data(search,page,size,status);
+    }
+
+
     @SchemaMapping(typeName = "Query",value = "customers")
     public List<Customer> getAllBike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
 
@@ -72,6 +90,7 @@ public class CustomerController {
 
         return customerService.findById(id);
     }
+
 
 
 
