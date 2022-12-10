@@ -97,34 +97,24 @@ public class BikeServiceImplementation implements BikeService {
         if(bikePicture.isEmpty()) return null;
         BikePicture picture = bikePicture.get();
 
-        BikePictureData bikePictureData = new BikePictureData(picture.getId(),Base64Utils.encodeToString(picture.getImage()));
-
-        return bikePictureData;
+        return new BikePictureData(picture.getId(),Base64Utils.encodeToString(picture.getImage()));
     }
 
+
     @Override
-    public List<Bike> getBikeRentedByCustomer(String search, int page, int size, String token) {
-        Pageable pageable = PageRequest.of(page,size);
+    public List<Bike> getBikeByCustomer(String search, String token) {
 
         String email = jwt.getUsername(token);
 
-        Page<Bike> pages = bikeRepository.getBikeCustomer(pageable,search, 2, email);
+        User user = userRepository.findByEmail(email);
 
+        System.out.println("The user " + user.getId());
 
-        return pages.getContent();
-    }
+        Customer customer =  user.getCustomer();
 
-    @Override
-    public List<Bike> getBikeRequestedByCustomer(String search, int page, int size, String token) {
-        /**
-         * TODO: get the token of the user
-         */
-        Pageable pageable = PageRequest.of(page,size);
+        System.out.println("The bike Size " +customer.getBikes().size());
 
-        String email = jwt.getUsername(token);
-        Page<Bike> pages = bikeRepository.getBikeCustomer(pageable,search, 1,email);
-
-        return pages.getContent();
+        return customer.getBikes();
     }
 
     @Override
@@ -150,7 +140,7 @@ public class BikeServiceImplementation implements BikeService {
         customer.setNextBilled(calendar.getTime());
 
         bike.setAssignedCustomer(customer);
-        bike.setStatus(bike.getBikeStatus(Bike.Status.RENTED));
+        bike.setStatus(Bike.getBikeStatus(Bike.Status.RENTED));
 
         return true;
     }

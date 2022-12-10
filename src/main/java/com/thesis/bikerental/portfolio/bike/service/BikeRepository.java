@@ -14,10 +14,6 @@ public interface BikeRepository extends JpaRepository<Bike, Long> {
     @Query(value = "SELECT t FROM Bike t WHERE t.status = ?1 and (t.name like %?2% or t.description like %?2% or t.name like %?2% or t.brand like %?2%)")
     Page<Bike> getAllBike(int status, String search, Pageable pageable);
 
-//    and T.assignedCustomer.user.email = ?4
-    @Query(value = "SELECT T FROM Bike T WHERE T.status = ?2")
-    Page<Bike> getBikeCustomer(Pageable pageable, String search, int status, String username);
-
     @Query(value = "SELECT T FROM Bike T WHERE T.status = 2")
     List<Bike> getBikeWithCustomer();
 }

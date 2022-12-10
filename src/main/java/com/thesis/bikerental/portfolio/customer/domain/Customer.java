@@ -1,5 +1,6 @@
 package com.thesis.bikerental.portfolio.customer.domain;
 
+import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -49,4 +51,7 @@ public class Customer {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @OneToMany(mappedBy = "assignedCustomer")
+    private List<Bike> bikes;
 }

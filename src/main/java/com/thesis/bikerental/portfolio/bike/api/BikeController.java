@@ -147,16 +147,12 @@ public class BikeController {
         return bikeService.data(search,page,size,status);
     }
 
-    @SchemaMapping(typeName = "Query",value = "getBikeByCustomerRented")
-    public List<Bike> getBikeRentedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument String token){
-
-        return bikeService.getBikeRentedByCustomer(search,page,size,token);
-    }
 
     @SchemaMapping(typeName = "Query",value = "getBikeByCustomer")
-    public List<Bike> getBikeRequestedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument String token){
+    public List<Bike> getBikeByCustomer(@Argument String search, @Argument String token){
 
-        return bikeService.getBikeRequestedByCustomer(search,page,size, token);
+
+        return bikeService.getBikeByCustomer(search,token);
     }
 
 

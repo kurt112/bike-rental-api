@@ -44,12 +44,11 @@ public class AuthController {
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(credentials.getUsername());
+        userDetailsService.getUser().setCustomer(null);
         final String jwt = this.jwt.generateToken(userDetails, false);
         result.put("token", jwt);
         result.put("message", "Login Successful");
         result.put("user", userDetailsService.getUser());
-
-
 
         return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
     }

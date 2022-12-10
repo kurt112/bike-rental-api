@@ -23,7 +23,7 @@ public  class User implements Comparable<User> {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "first_name")
@@ -46,7 +46,7 @@ public  class User implements Comparable<User> {
     @Column(name = "role")
     private String userRole;
 
-    @Column(name = "cellphone")
+    @Column(name = "cellphone", unique = true)
     private String cellphone;
 
     @Column(name = "is_account_not_expired")
