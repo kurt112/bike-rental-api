@@ -41,15 +41,7 @@ public class Security  extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-//        corsConfiguration.setAllowedOriginPatterns(List.of("/**"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.setExposedHeaders(List.of("Authorization"));
-
-        http.cors().configurationSource(request -> corsConfiguration).and().csrf().disable()
+        http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/**")
                 .permitAll()
