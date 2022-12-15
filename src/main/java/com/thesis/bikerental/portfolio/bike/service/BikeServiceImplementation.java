@@ -141,7 +141,50 @@ public class BikeServiceImplementation implements BikeService {
 
         bike.setAssignedCustomer(customer);
         bike.setStatus(Bike.getBikeStatus(Bike.Status.RENTED));
+        bikeRepository.save(bike);
+        return true;
+    }
 
+    @Override
+    public Boolean requestBikeByCustomer(String token, long bikeId) {
+        String email = jwt.getUsername(token);
+
+        if(email == null) return false;
+
+        User user = userRepository.findByEmail(email);
+
+        if(user == null) return false;
+
+        Bike bike = bikeRepository.findById(bikeId).orElse(null);
+
+        if(bike == null) return false;
+
+        Customer customer = user.getCustomer();
+
+        bike.setAssignedCustomer(customer);
+        bike.setStatus(Bike.getBikeStatus(Bike.Status.FOR_REQUEST));
+
+        bikeRepository.save(bike);
+
+        return true;
+    }
+
+    @Override
+    public Boolean cancelRequestBikeByCustomer(String token, long bikeId) {
+        String email = jwt.getUsername(token);
+
+        if(email == null) return false;
+
+        Bike bike = bikeRepository.findById(bikeId).orElse(null);
+
+        if(bike == null) return false;
+
+        if(bike.getAssignedCustomer() == null||!bike.getAssignedCustomer().getUser().getEmail().equals(email)){
+            return false;
+        }
+
+        bike.setStatus(Bike.getBikeStatus(Bike.Status.NOT_RENTED));
+        bikeRepository.save(bike);
         return true;
     }
 }

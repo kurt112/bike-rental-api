@@ -109,6 +109,32 @@ public class BikeController {
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
+    @PostMapping("/request")
+    public ResponseEntity<?>  customerRequestBike(@RequestParam("token") String token, @RequestParam("bikeId") long bikeId) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        if(!bikeService.requestBikeByCustomer(token, bikeId)){
+            result.putIfAbsent("data", "bike request invalid");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+
+        result.putIfAbsent("data", "bike request success");
+        return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<?>  customerCancelBikeRequest(@RequestParam("token") String token, @RequestParam("bikeId") long bikeId) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        if(!bikeService.cancelRequestBikeByCustomer(token, bikeId)){
+            result.putIfAbsent("data", "bike request invalid");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+
+        result.putIfAbsent("data", "bike request success");
+        return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+    }
+
     @PostMapping("/request/approved")
     public ResponseEntity<?> approveRequest(@RequestParam("userId") long userId, @RequestParam("bikeId") long bikeId){
         HashMap<String, Object> result = new HashMap<>();

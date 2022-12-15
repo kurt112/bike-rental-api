@@ -17,4 +17,8 @@ public interface BikeService extends ServiceGraphQL<Bike> {
 
     Boolean rentBikeByCustomer(String token, long BikeId);
 
+    Boolean requestBikeByCustomer(String token, long BikeId);
+
+    Boolean cancelRequestBikeByCustomer(String token, long bikeId);
+
 }
