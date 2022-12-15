@@ -49,6 +49,8 @@ public class CustomerController {
             customer.getUser().setPassword(new BCryptPasswordEncoder().encode(customer.getUser().getPassword()));
             userService.save(customer.getUser());
         }
+
+        customer.setActive(true);
         customerService.save(customer);
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
