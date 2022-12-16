@@ -19,8 +19,11 @@ import org.springframework.util.Base64Utils;
 
 import javax.transaction.Transactional;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.thesis.bikerental.portfolio.bike.domain.Bike.Status.RENTED;
 
 @Transactional
 @Service
@@ -41,10 +44,16 @@ public class BikeServiceImplementation implements BikeService {
     @Override
     public List<Bike> data (String search, int page, int size, int status) {
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Bike> pages = bikeRepository.getAllBike(status,search,pageable);
+        Page<Bike> pages = null;
+
+
+        if(status == Bike.getBikeStatus(Bike.Status.NOT_RENTED)){
+            pages = bikeRepository.getAllBikeAvailable(status,search,pageable);
+        }else {
+            pages = bikeRepository.getAllBike(status,search,pageable);
+        }
 
         apiSettings.initApiSettings(size,page,pages.getTotalPages(),pages.getTotalElements());
-
         return pages.getContent();
     }
 
@@ -140,13 +149,13 @@ public class BikeServiceImplementation implements BikeService {
         customer.setNextBilled(calendar.getTime());
 
         bike.setAssignedCustomer(customer);
-        bike.setStatus(Bike.getBikeStatus(Bike.Status.RENTED));
+        bike.setStatus(Bike.getBikeStatus(RENTED));
         bikeRepository.save(bike);
         return true;
     }
 
     @Override
-    public Boolean requestBikeByCustomer(String token, long bikeId) {
+    public Boolean requestBikeByCustomer(String token, long bikeId, Bike customerBike, Date startBarrow, Date endBarrow) {
         String email = jwt.getUsername(token);
 
         if(email == null) return false;
@@ -158,13 +167,24 @@ public class BikeServiceImplementation implements BikeService {
         Bike bike = bikeRepository.findById(bikeId).orElse(null);
 
         if(bike == null) return false;
+        if(bike.getQuantity() <=0) return false;
 
         Customer customer = user.getCustomer();
+        long currentBikeQuantity = bike.getQuantity()-1;
 
-        bike.setAssignedCustomer(customer);
-        bike.setStatus(Bike.getBikeStatus(Bike.Status.FOR_REQUEST));
+        bike.setQuantity(currentBikeQuantity);
+
+        // we will have a separate bike for customer
+        customerBike.setId(0);
+        customerBike.setStatus(Bike.getBikeStatus(Bike.Status.FOR_REQUEST));
+        customerBike.setQuantity(1);
+        customerBike.setAssignedCustomer(customer);
+        customerBike.setStartBarrow(startBarrow);
+        customerBike.setEndBarrow(endBarrow);
+        customerBike.setParentBike(bike);
 
         bikeRepository.save(bike);
+        bikeRepository.save(customerBike);
 
         return true;
     }
@@ -183,8 +203,16 @@ public class BikeServiceImplementation implements BikeService {
             return false;
         }
 
-        bike.setStatus(Bike.getBikeStatus(Bike.Status.NOT_RENTED));
-        bikeRepository.save(bike);
+        if(bike.getParentBike() == null){
+            bikeRepository.delete(bike);
+            return true;
+        }
+
+        Bike parentBike = bike.getParentBike();
+
+        parentBike.setQuantity(bike.getQuantity()+1);
+        bikeRepository.save(parentBike);
+        bikeRepository.delete(bike);
         return true;
     }
 }

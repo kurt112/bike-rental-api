@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -109,11 +110,16 @@ public class BikeController {
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
-    @PostMapping("/request")
-    public ResponseEntity<?>  customerRequestBike(@RequestParam("token") String token, @RequestParam("bikeId") long bikeId) {
+    @PostMapping("/request/{token}/{bikeId}/{start}/{end}")
+    public ResponseEntity<?>  customerRequestBike(@PathVariable("token") String token,
+                                                  @PathVariable("bikeId") long bikeId,
+                                                  @PathVariable("start") Date start,
+                                                  @PathVariable("end") Date end,
+                                                  @RequestBody Bike bike) {
         HashMap<String, Object> result = new HashMap<>();
 
-        if(!bikeService.requestBikeByCustomer(token, bikeId)){
+
+        if(!bikeService.requestBikeByCustomer(token, bikeId,bike, start,end)){
             result.putIfAbsent("data", "bike request invalid");
             return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
@@ -153,6 +159,7 @@ public class BikeController {
             result.put("message", "No bike Found");
             return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
+
 
 
 

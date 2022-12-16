@@ -4,8 +4,10 @@ import com.thesis.bikerental.portfolio.store.domain.Store;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -25,11 +27,17 @@ public class Bike implements Comparable<Bike>, Cloneable{
 
     @Column(name = "code", nullable = false)
     private String code;
+
     private String name;
+
     private double price;
+
     private String brand;
+
     private double size;
+
     private String description;
+
     private long quantity;
 
     private int status;
@@ -57,6 +65,18 @@ public class Bike implements Comparable<Bike>, Cloneable{
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
     private Date updated_at;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "start_barrow")
+    private Date startBarrow;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "end_barrow")
+    private Date endBarrow;
+
+    @OneToOne()
+    @JoinColumn(name = "bike_id")
+    private Bike parentBike;
 
     @Override
     public int compareTo(Bike bike) {
