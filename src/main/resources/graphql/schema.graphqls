@@ -20,6 +20,7 @@ type Bike {
     status: Int,
     startBarrow: String,
     endBarrow: String
+    parentBike: Bike
 }
 
 type User {

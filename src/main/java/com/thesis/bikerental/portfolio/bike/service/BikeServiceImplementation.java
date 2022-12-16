@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static com.thesis.bikerental.portfolio.bike.domain.Bike.Status.NOT_AVAILABLE;
 import static com.thesis.bikerental.portfolio.bike.domain.Bike.Status.RENTED;
 
 @Transactional
@@ -201,6 +202,30 @@ public class BikeServiceImplementation implements BikeService {
         parentBike.setQuantity(bike.getQuantity()+1);
         bikeRepository.save(parentBike);
         bikeRepository.delete(bike);
+        return true;
+    }
+
+    @Override
+    public Boolean terminateRentedBikeByCustomer(long userId, long bikeId) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        if(user == null) return false;
+
+        Bike bike = bikeRepository.findById(bikeId).orElse(null);
+
+        if(bike == null) return false;
+
+        if(bike.getAssignedCustomer().getUser().getId() != user.getId()) return false;
+
+        Bike parentBike = bike.getParentBike();
+
+        long newQty = parentBike.getQuantity() + 1;
+        parentBike.setQuantity(newQty);
+        bike.setStatus(Bike.getBikeStatus(NOT_AVAILABLE));
+
+
+        bikeRepository.save(bike);
+        bikeRepository.save(parentBike);
         return true;
     }
 }

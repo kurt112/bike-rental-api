@@ -152,7 +152,19 @@ public class BikeController {
         result.putIfAbsent("data", "bike approved success");
         return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
     }
+    @PostMapping("/terminate")
+    public ResponseEntity<?> terminateBikeRent(@RequestParam("userId") long userId, @RequestParam("bikeId") long bikeId){
+        HashMap<String, Object> result = new HashMap<>();
 
+        if(! bikeService.terminateRentedBikeByCustomer(userId,bikeId)){
+            result.putIfAbsent("data", "bike terminate invalid");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+
+
+        result.putIfAbsent("data", "bike terminate success");
+        return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
+    }
 
 
 
