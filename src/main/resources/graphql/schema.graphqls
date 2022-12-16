@@ -17,7 +17,9 @@ type Bike {
     bikePictures: [BikePicture],
     assignedCustomer: Customer,
     code: String,
-    status: Int
+    status: Int,
+    startBarrow: String,
+    endBarrow: String
 }
 
 type User {

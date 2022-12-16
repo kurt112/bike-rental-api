@@ -53,8 +53,6 @@ public class BikeController {
 
     @PostMapping("/photo")
     public ResponseEntity<HashMap<String, ?>> uploadBikePicture(@RequestBody MultipartFile photo, @RequestParam("bike-id") long id) {
-        System.out.println("The bike ID ");
-        System.out.println(id);
         HashMap<String, ?> content =  new HashMap<>();
         Bike bike = bikeService.findById(id);
 
@@ -141,34 +139,17 @@ public class BikeController {
         return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/request/approved")
+    @PostMapping("/request/approval")
     public ResponseEntity<?> approveRequest(@RequestParam("userId") long userId, @RequestParam("bikeId") long bikeId){
         HashMap<String, Object> result = new HashMap<>();
 
-        User user = userService.findById(userId);
-
-        System.out.println("the user ");
-
-        if(user == null){
-            result.put("message","No user Found");
-            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-        }
-
-        Bike bike = bikeService.findById(bikeId);
-        if(bike == null){
-            result.put("message", "No bike Found");
-            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-        }
+       if(! bikeService.rentBikeByCustomer(userId,bikeId)){
+           result.putIfAbsent("data", "bike approval invalid");
+           return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+       }
 
 
-
-
-        bike.setStatus(Bike.getBikeStatus(Bike.Status.RENTED));
-        bike.setAssignedCustomer(user.getCustomer());
-
-        bikeService.save(bike);
-        result.put("message", "Bike request success");
-
+        result.putIfAbsent("data", "bike approved success");
         return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
     }
 

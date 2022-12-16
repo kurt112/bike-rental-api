@@ -10,7 +10,6 @@ import com.thesis.bikerental.portfolio.user.service.UserRepository;
 import com.thesis.bikerental.utils.Jwt;
 import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 
 import javax.transaction.Transactional;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -117,23 +115,16 @@ public class BikeServiceImplementation implements BikeService {
 
         User user = userRepository.findByEmail(email);
 
-        System.out.println("The user " + user.getId());
-
         Customer customer =  user.getCustomer();
 
-        System.out.println("The bike Size " +customer.getBikes().size());
 
         return customer.getBikes();
     }
 
     @Override
-    public Boolean rentBikeByCustomer(String token, long bikeId) {
+    public Boolean rentBikeByCustomer(long userId, long bikeId) {
 
-        String email = jwt.getUsername(token);
-
-        if(email == null) return false;
-
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findById(userId).orElse(null);
 
         if(user == null) return false;
 
@@ -141,15 +132,12 @@ public class BikeServiceImplementation implements BikeService {
 
         if(bike == null) return false;
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, 15);
-
         Customer customer = user.getCustomer();
 
-        customer.setNextBilled(calendar.getTime());
+        customer.setNextBilled(bike.getStartBarrow());
 
-        bike.setAssignedCustomer(customer);
         bike.setStatus(Bike.getBikeStatus(RENTED));
+        customerRepository.saveAndFlush(customer);
         bikeRepository.save(bike);
         return true;
     }

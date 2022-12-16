@@ -24,7 +24,6 @@ public class EmployeeServiceImpl implements EmployeeService{
     public List<Employee> data(String search, int page, int size, int status) {
         Pageable pageable = PageRequest.of(page-1,size);
         Page<Employee> pages = employeeRepository.getEmployees(search,pageable);
-        System.out.println(pages.getContent());
         apiSettings.initApiSettings(size,page,pages.getTotalPages(),pages.getTotalElements());
         return pages.getContent();
     }

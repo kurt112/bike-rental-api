@@ -16,7 +16,7 @@ public interface BikeService extends ServiceGraphQL<Bike> {
 
     List<Bike> getBikeByCustomer(String search,String token);
 
-    Boolean rentBikeByCustomer(String token, long BikeId);
+    Boolean rentBikeByCustomer(long userId, long BikeId);
 
     Boolean requestBikeByCustomer(String token, long BikeId,  Bike bike, Date start, Date end);
 

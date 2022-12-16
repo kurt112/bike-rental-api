@@ -24,7 +24,6 @@ public class ApiSettings {
         if(maxElement >= totalElements) this.maxElement = totalElements;
 
         this.minElement = this.maxElement - size + 1;
-        System.out.println("The total eeemnts " + totalElements);
         if(totalElements <=0 ) this.minElement =0;
     }
 }

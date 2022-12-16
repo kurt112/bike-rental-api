@@ -43,7 +43,7 @@ public class Scheduler {
             if(currentTime.compareTo(customerNextBill) > 0){
 
                 System.out.println("===================================================================================");
-                System.out.println("Charging Customer");
+                System.out.println("Charging Customer " + customer.getUser().getFirstName() + " , " + customer.getUser().getLastName());
                 System.out.println("===================================================================================");
 
                 while (currentTime.compareTo(customerNextBill) >=0) {
