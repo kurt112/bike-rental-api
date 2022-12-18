@@ -48,6 +48,8 @@ public class EmployeeController {
             userService.save(employee.getUser());
         }
 
+        employee.setActive(true);
+
         employeeService.save(employee);
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
