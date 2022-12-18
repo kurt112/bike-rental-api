@@ -2,10 +2,7 @@ package com.thesis.bikerental.portfolio.bike.api;
 
 
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
-import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
-import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
 import com.thesis.bikerental.portfolio.bike.service.BikeService;
-import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserService;
 import com.thesis.bikerental.utils.Jwt;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +11,7 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,31 +46,13 @@ public class BikeController {
         return new ResponseEntity<>(content,HttpStatus.OK);
     }
 
-    @PostMapping("/photo")
-    public ResponseEntity<HashMap<String, ?>> uploadBikePicture(@RequestBody MultipartFile photo, @RequestParam("bike-id") long id) {
-        HashMap<String, ?> content =  new HashMap<>();
-        Bike bike = bikeService.findById(id);
+    @PostMapping("/{id}/photo/{name}")
+    public ResponseEntity<?> uploadBikePicture(@PathVariable("name") String bikePicture,@PathVariable("id") long id) {
 
-        try {
-            byte bikePhoto[]=photo.getBytes();
-            BikePicture bikePicture = BikePicture.builder().bike(bike).image(bikePhoto).build();
-            bike.getBikePictures().add(bikePicture);
-            bikeService.save(bike);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new ResponseEntity<>(content,HttpStatus.OK);
+
+        return bikeService.uploadBikePicture(bikePicture,id);
     }
 
-    @GetMapping("/photo")
-    public ResponseEntity<HashMap<String, ?>> getBikePicture(@RequestParam ("id") long id) {
-        HashMap<String, BikePictureData> content =  new HashMap<>();
-        BikePictureData bikePicture = bikeService.getBikeImage(id);
-
-        content.put("picture", bikePicture);
-
-        return new ResponseEntity<>(content,HttpStatus.OK);
-    }
 
     @PostMapping("/available")
     public List<Bike> getAvailableBike(@Argument String search, @Argument int page, @Argument int size, @Argument int status) {

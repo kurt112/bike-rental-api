@@ -4,6 +4,7 @@ import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
 import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
 import com.thesis.bikerental.utils.api.ServiceGraphQL;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,7 +13,6 @@ import java.util.List;
 @Service
 public interface BikeService extends ServiceGraphQL<Bike> {
 
-    BikePictureData getBikeImage(long pirctureId);
 
     List<Bike> getBikeByCustomer(String search,String token);
 
@@ -23,5 +23,7 @@ public interface BikeService extends ServiceGraphQL<Bike> {
     Boolean cancelRequestBikeByCustomer(String token, long bikeId);
 
     Boolean terminateRentedBikeByCustomer(long userId, long bikeId);
+
+    ResponseEntity<?> uploadBikePicture(String pictureName, long bikeId);
 
 }

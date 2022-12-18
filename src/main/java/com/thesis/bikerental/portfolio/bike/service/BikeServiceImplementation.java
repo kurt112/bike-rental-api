@@ -13,11 +13,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,17 +100,6 @@ public class BikeServiceImplementation implements BikeService {
     public long count() {
         return 0;
     }
-
-    @Override
-    public BikePictureData getBikeImage(long id) {
-        Optional<BikePicture> bikePicture = bikePictureRepository.findById(id);
-
-        if(bikePicture.isEmpty()) return null;
-        BikePicture picture = bikePicture.get();
-
-        return new BikePictureData(picture.getId(),Base64Utils.encodeToString(picture.getImage()));
-    }
-
 
     @Override
     public List<Bike> getBikeByCustomer(String search, String token) {
@@ -227,5 +219,29 @@ public class BikeServiceImplementation implements BikeService {
         bikeRepository.save(bike);
         bikeRepository.save(parentBike);
         return true;
+    }
+
+    @Override
+    public ResponseEntity<?> uploadBikePicture(String pictureName, long bikeId) {
+        HashMap<String, String > result = new HashMap<>();
+
+        Bike bike = findById(bikeId);
+
+        if(bike == null){
+
+            result.put("message", "No bike found");
+
+            return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
+        }
+
+
+        BikePicture bikePicture = BikePicture.builder().pictureName(pictureName).bike(bike).build();
+
+        bikePictureRepository.save(bikePicture);
+
+
+        result.put("message", "Uploaded Success");
+
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
 }

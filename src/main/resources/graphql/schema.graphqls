@@ -1,6 +1,6 @@
 type BikePicture {
     id: ID!
-    image: String,
+    pictureName: String,
 }
 
 type Bike {

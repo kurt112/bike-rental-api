@@ -22,8 +22,6 @@ public class BikePicture {
     @JoinColumn(name = "bike", nullable = false)
     private Bike bike;
 
-    @Lob
-    @Column( name = "image")
-    @Basic(fetch = FetchType.LAZY)
-    private byte[] image;
+    @Column(name = "picture_name")
+    private String pictureName;
 }
