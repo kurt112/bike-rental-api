@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import javax.websocket.server.PathParam;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,6 +79,14 @@ public class CustomerController {
 
 
         return bikeService.data(search,page,size,status);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getBill(@PathVariable("userId") Long id){
+
+        System.out.println("The id "+  id);
+
+        return customerService.getUserBill(id);
     }
 
 

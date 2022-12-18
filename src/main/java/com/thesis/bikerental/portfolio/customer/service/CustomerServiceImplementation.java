@@ -1,14 +1,19 @@
 package com.thesis.bikerental.portfolio.customer.service;
 
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
+import com.thesis.bikerental.portfolio.user.domain.User;
+import com.thesis.bikerental.portfolio.user.service.UserRepository;
 import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 @Transactional
@@ -17,6 +22,7 @@ import java.util.Optional;
 public class CustomerServiceImplementation implements CustomerService{
 
     private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
 
     private ApiSettings apiSettings = new ApiSettings(0,0,0,0,0);
 
@@ -68,5 +74,24 @@ public class CustomerServiceImplementation implements CustomerService{
     @Override
     public long count() {
         return 0;
+    }
+
+    @Override
+    public ResponseEntity<?> getUserBill(Long userId) {
+        HashMap<String , Object> result = new HashMap<>();
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if(user == null) {
+            result.put("data", "User Not Found");
+            return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+        }
+//        System.out.println("The user ");
+//        System.out.println(user);
+        System.out.println("The customer");
+        System.out.println(user.getCustomer());
+        result.put("data", 123L);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
