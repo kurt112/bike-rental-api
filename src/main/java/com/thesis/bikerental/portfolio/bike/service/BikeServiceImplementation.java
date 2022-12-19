@@ -163,6 +163,7 @@ public class BikeServiceImplementation implements BikeService {
         customerBike.setStartBarrow(startBarrow);
         customerBike.setEndBarrow(endBarrow);
         customerBike.setParentBike(bike);
+        customerBike.setBikePictures(null);
 
         bikeRepository.save(bike);
         bikeRepository.save(customerBike);

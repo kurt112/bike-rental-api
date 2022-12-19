@@ -17,7 +17,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Builder
-@ToString
 public class Customer {
 
     @Id
