@@ -4,6 +4,7 @@ import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.service.BikeService;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerService;
+import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -46,7 +47,24 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<HashMap<String, ?>> createCustomer(@RequestBody Customer customer){
-        HashMap<String ,?> hashMap = new HashMap<>();
+        HashMap<String ,Object> hashMap = new HashMap<>();
+
+        User user = customer.getUser();
+
+        if(user == null){
+            hashMap.put("message","Customer user does not exist");
+            return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
+        }
+
+        if(userService.findByEmail(user.getEmail()) !=null){
+            hashMap.put("email","Email already exist");
+        }
+
+        if(userService.findByCellphone(user.getCellphone()) !=null){
+            hashMap.put("cellphone","Cellphone number must be unique");
+            return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
+        }
+
         if(customer.getUser() != null){
             customer.getUser().setPassword(new BCryptPasswordEncoder().encode(customer.getUser().getPassword()));
             userService.save(customer.getUser());

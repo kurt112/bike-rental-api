@@ -2,7 +2,6 @@ package com.thesis.bikerental.portfolio.bike.service;
 
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
-import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerRepository;
 import com.thesis.bikerental.portfolio.user.domain.User;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -106,7 +104,7 @@ public class BikeServiceImplementation implements BikeService {
 
         String email = jwt.getUsername(token);
 
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findFirstByEmail(email);
 
         Customer customer =  user.getCustomer();
 
@@ -141,7 +139,7 @@ public class BikeServiceImplementation implements BikeService {
 
         if(email == null) return false;
 
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findFirstByEmail(email);
 
         if(user == null) return false;
 

@@ -3,7 +3,6 @@ package com.thesis.bikerental.portfolio.user.service;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -56,6 +55,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findFirstByEmail(email);
+    }
+
+    @Override
+    public User findByCellphone(String cellphone) {
+        return userRepository.findFirstByCellphone(cellphone);
     }
 }

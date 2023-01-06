@@ -78,6 +78,10 @@ public class Bike implements Comparable<Bike>, Cloneable{
     @JoinColumn(name = "bike_id")
     private Bike parentBike;
 
+    @Column(name = "date_charge")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCharge;
+
     @Override
     public int compareTo(Bike bike) {
         return (int)this.id - (int)bike.getId();

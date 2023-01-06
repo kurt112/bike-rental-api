@@ -86,11 +86,8 @@ public class CustomerServiceImplementation implements CustomerService{
             result.put("data", "User Not Found");
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
-//        System.out.println("The user ");
-//        System.out.println(user);
-        System.out.println("The customer");
-        System.out.println(user.getCustomer());
-        result.put("data", 123L);
+
+        result.put("data", user.getCustomer().getToPay());
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

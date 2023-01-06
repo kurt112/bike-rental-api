@@ -2,6 +2,8 @@ package com.thesis.bikerental.infrastructure.scheduler;
 
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.service.BikeRepository;
+import com.thesis.bikerental.portfolio.charge.domain.Transaction;
+import com.thesis.bikerental.portfolio.charge.service.TransactionRepository;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ public class Scheduler {
 
     private final CustomerRepository customerRepository;
     private final BikeRepository bikeRepository;
+    private final TransactionRepository transactionRepository;
 
 
 
@@ -26,6 +29,7 @@ public class Scheduler {
 
         for(Bike bike: bikeList){
             Customer customer = bike.getAssignedCustomer();
+
             /**
              * since the price of the bike is billed by per hour we will divide it by four
              * since our task will run every 15 minutes
@@ -37,24 +41,44 @@ public class Scheduler {
             Calendar currentTime = Calendar.getInstance();
 
 
-            Calendar customerNextBill = Calendar.getInstance();
-            customerNextBill.setTime(customer.getNextBilled());
+            // get the target billed for current bike
+            Calendar bikeTargetCharge = Calendar.getInstance();
+            bikeTargetCharge.setTime(bike.getDateCharge());
 
-            if(currentTime.compareTo(customerNextBill) > 0){
 
-                System.out.println("===================================================================================");
-                System.out.println("Charging Customer " + customer.getUser().getFirstName() + " , " + customer.getUser().getLastName());
-                System.out.println("===================================================================================");
+            Calendar customerTargetNextBilled = Calendar.getInstance();
+            customerTargetNextBilled.setTime(customer.getNextBilled());
+            // if the current bike charge is less than customer next billed
+            // we will set the less bike charge as customer next billed
+            if(bikeTargetCharge.compareTo(customerTargetNextBilled) > 0) {
+                customer.setNextBilled(bikeTargetCharge.getTime());
+                customerRepository.saveAndFlush(customer);
+            }
 
-                while (currentTime.compareTo(customerNextBill) >=0) {
+            if(currentTime.compareTo(bikeTargetCharge) > 0){
+
+                while (currentTime.compareTo(bikeTargetCharge) >=0) {
+                    Transaction transaction = Transaction
+                            .builder()
+                            .amount(bikePricePerFifteenMinutes)
+                            .newAmount(currentBill +bikePricePerFifteenMinutes)
+                            .pastAmount(currentBill)
+                            .chargedTo(customer.getUser())
+                            .description("Added charged with the amount of " + bikePricePerFifteenMinutes +
+                                    " for the renting bike with the code of " + bike.getCode())
+                            .date(bikeTargetCharge.getTime())
+                            .build();
                     currentBill += bikePricePerFifteenMinutes;
-                    customerNextBill.add(Calendar.MINUTE, 15);
+//                    transactionRepository.saveAndFlush(transaction);
+                    bikeTargetCharge.add(Calendar.MINUTE, 15);
                 }
 
-                customer.setNextBilled(customerNextBill.getTime());
-                customerNextBill.add(Calendar.MINUTE, -15);
-                customer.setLastBilled(customerNextBill.getTime());
+
+                bike.setDateCharge(bikeTargetCharge.getTime());
+                bikeRepository.saveAndFlush(bike);
+
                 customer.setToPay(currentBill);
+                customer.setLastBilled(bikeTargetCharge.getTime());
                 customerRepository.saveAndFlush(customer);
             }
 

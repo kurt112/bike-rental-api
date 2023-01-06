@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("select T from User T where T.email = :email")
-    User findByEmail(String email);
+    User findFirstByEmail(String email);
+
+    User findFirstByCellphone(String cellphone);
 }
