@@ -7,8 +7,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
-@Table(name = "store_transactions")
 @Entity
+@Table(name = "store_transactions")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

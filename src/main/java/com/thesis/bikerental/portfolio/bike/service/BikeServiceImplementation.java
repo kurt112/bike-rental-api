@@ -82,11 +82,7 @@ public class BikeServiceImplementation implements BikeService {
 
     @Override
     public Bike findById(long id) {
-        Optional<Bike> bike = bikeRepository.findById(id);
-        if(!bike.isEmpty()){
-//            System.out.println(BlobProxy.generateProxy(bike.get().getBikePictures().get(0).getImage()).toString());
-        }
-        return bike.orElse(null);
+        return bikeRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -242,5 +238,24 @@ public class BikeServiceImplementation implements BikeService {
         result.put("message", "Uploaded Success");
 
         return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @Override
+    public Boolean rejectBikeRequest(long userId, long bikeId) {
+        User user = userRepository.findById(userId).orElse(null);
+        Bike bike = findById(bikeId);
+        if(user == null) return false;
+
+        if(bike == null) return false;
+
+        if(bike.getParentBike() == null){
+            bikeRepository.delete(bike);
+            return true;
+        }
+        Bike parentBike = bike.getParentBike();
+        parentBike.setQuantity(bike.getQuantity()+1);
+        bikeRepository.save(parentBike);
+        bikeRepository.delete(bike);
+        return true;
     }
 }

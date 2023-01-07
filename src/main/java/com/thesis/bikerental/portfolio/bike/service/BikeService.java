@@ -26,4 +26,6 @@ public interface BikeService extends ServiceGraphQL<Bike> {
 
     ResponseEntity<?> uploadBikePicture(String pictureName, long bikeId);
 
+    Boolean rejectBikeRequest(long userId, long bikeId);
+
 }

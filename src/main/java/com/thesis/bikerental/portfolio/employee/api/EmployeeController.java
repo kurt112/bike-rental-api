@@ -2,6 +2,7 @@ package com.thesis.bikerental.portfolio.employee.api;
 
 import com.thesis.bikerental.portfolio.employee.domain.Employee;
 import com.thesis.bikerental.portfolio.employee.service.EmployeeService;
+import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -45,7 +46,12 @@ public class EmployeeController {
         HashMap<String ,?> hashMap = new HashMap<>();
 
         if(employee.getUser() != null){
-            userService.save(employee.getUser());
+            User user = employee.getUser();
+            user.setEnabled(true);
+            user.setCredentialNotExpired(true);
+            user.setAccountNotExpired(true);
+            user.setAccountNotLocked(true);
+            userService.save(user);
         }
 
         employee.setActive(true);

@@ -67,6 +67,10 @@ public class CustomerController {
 
         if(customer.getUser() != null){
             customer.getUser().setPassword(new BCryptPasswordEncoder().encode(customer.getUser().getPassword()));
+            user.setEnabled(true);
+            user.setCredentialNotExpired(true);
+            user.setAccountNotExpired(true);
+            user.setAccountNotLocked(true);
             userService.save(customer.getUser());
         }
 
