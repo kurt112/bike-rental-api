@@ -1,10 +1,9 @@
 package com.thesis.bikerental.portfolio.bike.api;
 
-
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.service.BikeService;
-import com.thesis.bikerental.portfolio.user.service.UserService;
-import com.thesis.bikerental.utils.Jwt;
+import com.thesis.bikerental.portfolio.store.domain.Store;
+import com.thesis.bikerental.portfolio.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -21,16 +20,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BikeController {
     private final BikeService bikeService;
-    private final UserService userService;
+    private final StoreService storeService;
 
-    private final Jwt jwt;
-
-
-    @PostMapping
-    public ResponseEntity<HashMap<String, ?>> createBike(@RequestBody Bike bike) {
+    @PostMapping("{store-id}")
+    public ResponseEntity<HashMap<String, ?>> createBike(@PathVariable("store-id") long storeId, @RequestBody Bike bike) {
 
         HashMap<String, Object> content =  new HashMap<>();
 
+        Store store = storeService.findById(storeId);
+
+        if(store ==null) {
+            content.put("data", "No Store Found");
+            return new ResponseEntity<>(content,HttpStatus.BAD_REQUEST);
+        }
+
+        bike.setStore(store);
         bikeService.save(bike);
 
         content.put("data",bike);

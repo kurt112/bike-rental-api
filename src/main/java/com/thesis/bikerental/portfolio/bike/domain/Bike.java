@@ -1,4 +1,5 @@
 package com.thesis.bikerental.portfolio.bike.domain;
+
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.store.domain.Store;
 import lombok.*;
@@ -7,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -44,6 +44,10 @@ public class Bike implements Comparable<Bike>, Cloneable{
 
     private boolean available;
 
+    private String longitude;
+
+    private String latitude;
+
     @OneToMany(mappedBy = "bike", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<BikePicture> bikePictures;
 
@@ -74,7 +78,7 @@ public class Bike implements Comparable<Bike>, Cloneable{
     @Column(name = "end_barrow")
     private Date endBarrow;
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "bike_id")
     private Bike parentBike;
 

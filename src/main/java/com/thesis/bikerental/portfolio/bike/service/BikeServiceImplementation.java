@@ -43,9 +43,15 @@ public class BikeServiceImplementation implements BikeService {
     //available
     @Override
     public List<Bike> data (String search, int page, int size, int status) {
-        Pageable pageable = PageRequest.of(page-1,size);
-        Page<Bike> pages = null;
 
+        if(search.equals("all")){
+            List<Bike> bikes = bikeRepository.getAllBikes(status);
+            apiSettings.initApiSettings(bikes.size(),1,1,bikes.size());
+            return bikes;
+        }
+
+        Pageable pageable = PageRequest.of(page-1,size);
+        Page<Bike> pages;
 
         if(status == Bike.getBikeStatus(Bike.Status.NOT_RENTED)){
             pages = bikeRepository.getAllBikeAvailable(status,search,pageable);
@@ -124,8 +130,11 @@ public class BikeServiceImplementation implements BikeService {
         customer.setNextBilled(bike.getStartBarrow());
 
         bike.setStatus(Bike.getBikeStatus(RENTED));
+        bike.setDateCharge(bike.getStartBarrow());
+        bike.setLatitude(bike.getParentBike().getLatitude());
+        bike.setLongitude(bike.getParentBike().getLongitude());
         customerRepository.saveAndFlush(customer);
-        bikeRepository.save(bike);
+        bikeRepository.saveAndFlush(bike);
         return true;
     }
 

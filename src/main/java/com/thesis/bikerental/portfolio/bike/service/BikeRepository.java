@@ -19,4 +19,7 @@ public interface BikeRepository extends JpaRepository<Bike, Long> {
 
     @Query(value = "SELECT T FROM Bike T WHERE T.status = 2")
     List<Bike> getBikeWithCustomer();
+
+    @Query(value = "SELECT t FROM Bike t WHERE t.status = ?1")
+    List<Bike> getAllBikes(int status);
 }

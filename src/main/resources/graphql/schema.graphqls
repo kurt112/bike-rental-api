@@ -19,8 +19,10 @@ type Bike {
     code: String,
     status: Int,
     startBarrow: String,
-    endBarrow: String
-    parentBike: Bike
+    endBarrow: String,
+    parentBike: Bike,
+    longitude: String,
+    latitude: String
 }
 
 type User {
