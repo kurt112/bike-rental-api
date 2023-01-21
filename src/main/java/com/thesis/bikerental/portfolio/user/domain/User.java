@@ -1,8 +1,8 @@
 package com.thesis.bikerental.portfolio.user.domain;
 
-
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
+import com.thesis.bikerental.portfolio.employee.domain.Employee;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,6 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public  class User implements Comparable<User> {
 
     @Id
@@ -49,15 +50,19 @@ public  class User implements Comparable<User> {
     @Column(name = "cellphone", unique = true)
     private String cellphone;
 
+    @JsonProperty("isAccountNotExpired")
     @Column(name = "is_account_not_expired")
     private boolean isAccountNotExpired;
 
+    @JsonProperty("isAccountNotLocked")
     @Column(name = "is_account_not_locked")
     private boolean isAccountNotLocked;
 
+    @JsonProperty("isCredentialNotExpired")
     @Column(name = "is_credential_not_expired")
     private boolean isCredentialNotExpired;
 
+    @JsonProperty("isEnabled")
     @Column(name ="is_enable")
     private boolean isEnabled;
 
@@ -74,9 +79,20 @@ public  class User implements Comparable<User> {
     @OneToOne(mappedBy = "user")
     private Customer customer;
 
+    @OneToOne(mappedBy = "user")
+    private Employee employee;
+
     @Override
     public int compareTo(User o) {
 
         return o.getLastName().compareToIgnoreCase(lastName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User tempUser = (User) o;
+        return this.id == tempUser.id;
     }
 }

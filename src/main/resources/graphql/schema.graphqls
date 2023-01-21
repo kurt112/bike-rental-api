@@ -53,10 +53,12 @@ type Customer {
     nextBilled: String
     createdAt: String
     updatedAt: String
+    isActive: String
 }
 
 type Employee {
     id: ID!
+    isActive:String,
     user: User
 }
 

@@ -5,7 +5,7 @@ import com.thesis.bikerental.portfolio.bike.service.BikeService;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerService;
 import com.thesis.bikerental.portfolio.user.domain.User;
-import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
+import com.thesis.bikerental.portfolio.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.websocket.server.PathParam;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,12 +23,28 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
-    private final UserServiceImpl userService;
+    private final UserService userService;
     private final BikeService bikeService;
 
     @PatchMapping
     public ResponseEntity<HashMap<String, ?>> updateCustomer(@RequestBody Customer customer){
-        HashMap<String ,?> hashMap = new HashMap<>();
+        HashMap<String ,Object> hashMap = new HashMap<>();
+
+        User user = customer.getUser();
+
+        System.out.println("i am here");
+
+        if(user == null){
+            hashMap.put("message","Customer user does not exist");
+            return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
+        }
+
+        System.out.println(user.isAccountNotExpired());
+        System.out.println(user.isEnabled());
+
+        userService.validateUser(hashMap, user);
+
+        if(hashMap.size() > 0) return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
 
         customerService.save(customer);
 
@@ -56,14 +71,10 @@ public class CustomerController {
             return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
         }
 
-        if(userService.findByEmail(user.getEmail()) !=null){
-            hashMap.put("email","Email already exist");
-        }
+        userService.validateUser(hashMap, user);
 
-        if(userService.findByCellphone(user.getCellphone()) !=null){
-            hashMap.put("cellphone","Cellphone number must be unique");
-            return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
-        }
+        if(hashMap.size() > 0) return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
+
 
         if(customer.getUser() != null){
             customer.getUser().setPassword(new BCryptPasswordEncoder().encode(customer.getUser().getPassword()));
@@ -123,6 +134,10 @@ public class CustomerController {
     public Customer getCustomerById(@Argument long id){
 
         return customerService.findById(id);
+    }
+
+    private void validateUser () {
+
     }
 
 

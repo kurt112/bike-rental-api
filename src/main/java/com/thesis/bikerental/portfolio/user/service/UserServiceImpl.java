@@ -3,9 +3,12 @@ package com.thesis.bikerental.portfolio.user.service;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,5 +64,20 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findByCellphone(String cellphone) {
         return userRepository.findFirstByCellphone(cellphone);
+    }
+
+    @Override
+    public void validateUser(HashMap<String, Object> validation, User user) {
+        User currentUserEmail = findByEmail(user.getEmail());
+        User currentUserCellphone = findByCellphone(user.getCellphone());
+
+
+        if(currentUserEmail != null && currentUserEmail.getId() != user.getId()){
+            validation.put("email","Email already exist");
+        }
+
+        if(currentUserCellphone != null && currentUserCellphone.getId() != user.getId()){
+            validation.put("cellphone","Cellphone number must be unique");
+        }
     }
 }

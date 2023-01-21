@@ -1,5 +1,6 @@
 package com.thesis.bikerental.portfolio.customer.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import lombok.*;
@@ -30,6 +31,7 @@ public class Customer {
     @Column(name = "to_pay", columnDefinition="Decimal(10,2)")
     private double toPay;
 
+    @JsonProperty("isActive")
     @Column(name = "is_active")
     private boolean isActive;
 
@@ -53,4 +55,12 @@ public class Customer {
 
     @OneToMany(mappedBy = "assignedCustomer")
     private List<Bike> bikes;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer tempCustomer = (Customer) o;
+        return this.id == tempCustomer.id;
+    }
 }

@@ -41,7 +41,9 @@ public class CustomerServiceImplementation implements CustomerService{
     @Transactional
     public Customer save(Customer customer) {
         try {
-            customerRepository.saveAndFlush(customer);
+            System.out.println("The customer " + customer.getId());
+            System.out.println("The user " + customer.getUser().getId());
+            customerRepository.save(customer);
         }catch (Exception e){
             e.printStackTrace();
         }
