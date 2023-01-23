@@ -14,7 +14,7 @@ import java.util.List;
 public interface BikeService extends ServiceGraphQL<Bike> {
 
 
-    List<Bike> getBikeByCustomer(String search,String token);
+    List<Bike> getBikeByCustomer(String token);
 
     Boolean rentBikeByCustomer(long userId, long BikeId);
 
@@ -27,5 +27,7 @@ public interface BikeService extends ServiceGraphQL<Bike> {
     ResponseEntity<?> uploadBikePicture(String pictureName, long bikeId);
 
     Boolean rejectBikeRequest(long userId, long bikeId);
+
+    Boolean updateBikeLocationByUser(String token, String lng, String lat);
 
 }

@@ -102,15 +102,10 @@ public class BikeServiceImplementation implements BikeService {
     }
 
     @Override
-    public List<Bike> getBikeByCustomer(String search, String token) {
-
+    public List<Bike> getBikeByCustomer(String token) {
         String email = jwt.getUsername(token);
-
         User user = userRepository.findFirstByEmail(email);
-
         Customer customer =  user.getCustomer();
-
-
         return customer.getBikes();
     }
 
@@ -265,6 +260,19 @@ public class BikeServiceImplementation implements BikeService {
         parentBike.setQuantity(bike.getQuantity()+1);
         bikeRepository.save(parentBike);
         bikeRepository.delete(bike);
+        return true;
+    }
+
+    @Override
+    public Boolean updateBikeLocationByUser(String token, String lng, String lat) {
+        List<Bike> bikes = getBikeByCustomer(token);
+
+        bikes.forEach(e -> {
+            e.setLongitude(lng);
+            e.setLatitude(lat);
+            bikeRepository.save(e);
+        });
+
         return true;
     }
 }

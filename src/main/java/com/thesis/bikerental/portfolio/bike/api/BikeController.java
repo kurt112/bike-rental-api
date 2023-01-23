@@ -163,6 +163,17 @@ public class BikeController {
         return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/update/location")
+    public ResponseEntity<?> updateLocation(@RequestParam("lat") String latitude,
+                                            @RequestParam("lng") String longitude,
+                                            @RequestParam("token") String token){
+
+        HashMap<String, Object> result = new HashMap<>();
+        bikeService.updateBikeLocationByUser(token,longitude,latitude);
+        result.put("data", "bike location updated");
+        return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
+    }
+
 
 
     @SchemaMapping(typeName = "Query",value = "bikes")
@@ -175,7 +186,7 @@ public class BikeController {
     public List<Bike> getBikeByCustomer(@Argument String search, @Argument String token){
 
 
-        return bikeService.getBikeByCustomer(search,token);
+        return bikeService.getBikeByCustomer(token);
     }
 
 
