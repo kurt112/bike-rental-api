@@ -24,12 +24,18 @@ public class Notification {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "from_user")
+    private User from;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "to_user")
+    private User to;
 
     private String message;
 
     private boolean isRead;
+
+    private String link;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -23,7 +23,7 @@ public class Scheduler {
 
 
 
-    @Scheduled(fixedRate = 15_000) // 5 minutes  will re-run this and billed the customer
+//    @Scheduled(fixedRate = 15_000) // 5 minutes  will re-run this and billed the customer
     public void chargeCustomerBike() {
         List<Bike> bikeList = bikeRepository.getBikeWithCustomer();
 

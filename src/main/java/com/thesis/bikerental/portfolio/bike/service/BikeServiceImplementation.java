@@ -4,6 +4,8 @@ import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerRepository;
+import com.thesis.bikerental.portfolio.notification.domain.Notification;
+import com.thesis.bikerental.portfolio.notification.service.NotificationService;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserRepository;
 import com.thesis.bikerental.utils.Jwt;
@@ -34,11 +36,11 @@ public class BikeServiceImplementation implements BikeService {
     private final BikePictureRepository bikePictureRepository;
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     private final Jwt jwt;
 
     private ApiSettings apiSettings = new ApiSettings(0,0,0,0,0);
-
 
     //available
     @Override
@@ -120,6 +122,16 @@ public class BikeServiceImplementation implements BikeService {
 
         if(bike == null) return false;
 
+
+        Notification notification = Notification
+                .builder()
+                .to(bike.getAssignedCustomer().getUser())
+                .from(null)
+                .link("bike/rented?search="+user.getFirstName()+"&page=1&size=10&status=2")
+                .message("Request bike is approve!")
+                .build();
+        notificationService.save(notification);
+
         Customer customer = user.getCustomer();
 
         customer.setNextBilled(bike.getStartBarrow());
@@ -165,7 +177,14 @@ public class BikeServiceImplementation implements BikeService {
 
         bikeRepository.save(bike);
         bikeRepository.save(customerBike);
+        Notification notification = Notification
+                .builder()
+                .to(null)
+                .from(user)
+                .message("Requesting bike")
+                .build();
 
+        notificationService.save(notification);
         return true;
     }
 
@@ -183,6 +202,13 @@ public class BikeServiceImplementation implements BikeService {
             return false;
         }
 
+        Notification notification = Notification
+                .builder()
+                .to(null)
+                .from(bike.getAssignedCustomer().getUser())
+                .message("Cancelled his request")
+                .build();
+        notificationService.save(notification);
         if(bike.getParentBike() == null){
             bikeRepository.delete(bike);
             return true;
@@ -207,6 +233,14 @@ public class BikeServiceImplementation implements BikeService {
         if(bike == null) return false;
 
         if(bike.getAssignedCustomer().getUser().getId() != user.getId()) return false;
+
+        Notification notification = Notification
+                .builder()
+                .to(bike.getAssignedCustomer().getUser())
+                .from(null)
+                .message("Terminate your rent")
+                .build();
+        notificationService.save(notification);
 
         Bike parentBike = bike.getParentBike();
 
@@ -256,6 +290,14 @@ public class BikeServiceImplementation implements BikeService {
             bikeRepository.delete(bike);
             return true;
         }
+
+        Notification notification = Notification
+                .builder()
+                .to(bike.getAssignedCustomer().getUser())
+                .from(null)
+                .message("Rejected your request")
+                .build();
+        notificationService.save(notification);
         Bike parentBike = bike.getParentBike();
         parentBike.setQuantity(bike.getQuantity()+1);
         bikeRepository.save(parentBike);

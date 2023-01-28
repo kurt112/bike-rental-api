@@ -79,7 +79,7 @@ public class Bike implements Comparable<Bike>, Cloneable{
     private Date endBarrow;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "bike_id")
+    @JoinColumn(name = "parent_bike")
     private Bike parentBike;
 
     @Column(name = "date_charge")
