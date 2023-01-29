@@ -54,7 +54,7 @@ public class NotificationServiceImpl implements NotificationService{
 
         long id = user.getId();
 
-        if(user.getUserRole().equals("admin")){
+        if(user.getUserRole().equals("admin") || user.getUserRole().equals("employee")){
             id = -1L;
         }
 
