@@ -1,6 +1,8 @@
 package com.thesis.bikerental.portfolio.customer.service;
 
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
+import com.thesis.bikerental.portfolio.notification.domain.Notification;
+import com.thesis.bikerental.portfolio.notification.service.NotificationService;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserRepository;
 import com.thesis.bikerental.utils.api.ApiSettings;
@@ -23,7 +25,7 @@ public class CustomerServiceImplementation implements CustomerService{
 
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
-
+    private final NotificationService notificationService;
     private ApiSettings apiSettings = new ApiSettings(0,0,0,0,0);
 
     @Override
@@ -41,9 +43,15 @@ public class CustomerServiceImplementation implements CustomerService{
     @Transactional
     public Customer save(Customer customer) {
         try {
-            System.out.println("The customer " + customer.getId());
-            System.out.println("The user " + customer.getUser().getId());
             customerRepository.save(customer);
+            Notification notification = Notification
+                    .builder()
+                    .to(null)
+                    .from(null)
+                    .link("")
+                    .message(customer.getUser().getFirstName() + " " + customer.getUser().getLastName() + " is our new customer!")
+                    .build();
+            notificationService.save(notification);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -58,7 +66,14 @@ public class CustomerServiceImplementation implements CustomerService{
         if(customer == null) return false;
 
         customerRepository.deleteById(id);
-
+        Notification notification = Notification
+                .builder()
+                .to(null)
+                .from(null)
+                .link("")
+                .message(customer.getUser().getFirstName() + " " + customer.getUser().getLastName() + " is deleted in our system")
+                .build();
+        notificationService.save(notification);
         return true;
     }
 

@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "store")
 public class Store implements Comparable<Store> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "name")
