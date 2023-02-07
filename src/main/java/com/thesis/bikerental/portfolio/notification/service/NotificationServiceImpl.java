@@ -7,6 +7,7 @@ import com.thesis.bikerental.utils.Jwt;
 import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,12 +25,15 @@ public class NotificationServiceImpl implements NotificationService{
     private final UserRepository userRepository;
     private final User system;
     private final Jwt jwt;
+
+    private final long systemId;
     @Autowired
-    public NotificationServiceImpl(NotificationRepository repository, UserRepository userRepository, Jwt jwt) {
+    public NotificationServiceImpl(NotificationRepository repository, UserRepository userRepository, Jwt jwt,  @Value("${system.id}") long systemId) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.jwt = jwt;
-        system = userRepository.findById(-1L).orElse(null);
+        this.systemId = systemId;
+        system = userRepository.findById(systemId).orElse(null);
     }
 
 
@@ -55,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService{
         long id = user.getId();
 
         if(user.getUserRole().equals("admin") || user.getUserRole().equals("employee")){
-            id = -1L;
+            id = systemId;
         }
 
         Page<Notification> notificationsUser = repository.getAllRecentNotification(id,pageable);
