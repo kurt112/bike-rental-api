@@ -13,7 +13,7 @@ type Bike {
     size: Int
     name: String,
     description: String,
-    available: Int,
+    available: String,
     bikePictures: [BikePicture],
     assignedCustomer: Customer,
     code: String,

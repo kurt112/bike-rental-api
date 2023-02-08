@@ -26,8 +26,6 @@ public class Scheduler {
     @Scheduled(fixedRate = 15_000) // 5 minutes  will re-run this and billed the customer
     public void chargeCustomerBike() {
         List<Bike> bikeList = bikeRepository.getBikeWithCustomer();
-
-        System.out.println(bikeList.size());
         for(Bike bike: bikeList){
             Customer customer = bike.getAssignedCustomer();
 

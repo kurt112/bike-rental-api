@@ -44,10 +44,16 @@ public class BikeController {
 
     @DeleteMapping
     public ResponseEntity<HashMap<String, ?>> deleteBike(@RequestParam long id) {
-        HashMap<String, ?> content =  new HashMap<>();
-        bikeService.deleteById(id);
+        HashMap<String, String> content =  new HashMap<>();
 
-        return new ResponseEntity<>(content,HttpStatus.OK);
+        if(bikeService.deleteById(id)){
+            content.put("message", "Bike delete successful");
+
+            return new ResponseEntity<>(content,HttpStatus.OK);
+        }
+
+        content.put("message", "This item is using to other component");
+        return new ResponseEntity<>(content,HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/{id}/photo/{name}")

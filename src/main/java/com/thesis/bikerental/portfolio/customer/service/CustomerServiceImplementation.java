@@ -65,7 +65,7 @@ public class CustomerServiceImplementation implements CustomerService{
 
         if(customer == null) return false;
 
-        customerRepository.deleteById(id);
+        customer.setActive(false);
         Notification notification = Notification
                 .builder()
                 .to(null)

@@ -22,7 +22,6 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static com.thesis.bikerental.portfolio.bike.domain.Bike.Status.NOT_AVAILABLE;
 import static com.thesis.bikerental.portfolio.bike.domain.Bike.Status.RENTED;
@@ -79,11 +78,17 @@ public class BikeServiceImplementation implements BikeService {
     @Override
     public boolean deleteById(long id) {
 
-        Optional<Bike> bike = bikeRepository.findById(id);
+        Bike bike = bikeRepository.findById(id).orElse(null);
 
-        if(bike.isEmpty()) return false;
+        if(bike  == null) return false;
 
-        bikeRepository.deleteById(bike.get().getId());
+        bike.setAvailable(false);
+
+//        try {
+//            bikeRepository.deleteById(bike.getId());
+//        }catch (Exception e){
+//            return false;
+//        }
 
         return true;
     }

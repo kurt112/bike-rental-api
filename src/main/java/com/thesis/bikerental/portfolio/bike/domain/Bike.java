@@ -1,5 +1,6 @@
 package com.thesis.bikerental.portfolio.bike.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.store.domain.Store;
 import lombok.*;
@@ -42,7 +43,9 @@ public class Bike implements Comparable<Bike>, Cloneable{
 
     private int status;
 
-    private boolean available;
+    @JsonProperty("isAvailable")
+    @Column(name = "available")
+    private boolean isAvailable;
 
     private String longitude;
 
