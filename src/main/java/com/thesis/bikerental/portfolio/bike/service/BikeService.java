@@ -1,8 +1,6 @@
 package com.thesis.bikerental.portfolio.bike.service;
 
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
-import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
-import com.thesis.bikerental.portfolio.bike.domain.BikePictureData;
 import com.thesis.bikerental.utils.api.ServiceGraphQL;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

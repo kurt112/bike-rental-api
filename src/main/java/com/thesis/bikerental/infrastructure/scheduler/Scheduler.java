@@ -27,6 +27,7 @@ public class Scheduler {
     public void chargeCustomerBike() {
         List<Bike> bikeList = bikeRepository.getBikeWithCustomer();
 
+        System.out.println(bikeList.size());
         for(Bike bike: bikeList){
             Customer customer = bike.getAssignedCustomer();
 
