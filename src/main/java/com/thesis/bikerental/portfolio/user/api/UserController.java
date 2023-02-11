@@ -1,6 +1,5 @@
 package com.thesis.bikerental.portfolio.user.api;
 
-import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;

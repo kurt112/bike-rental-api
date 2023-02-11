@@ -82,6 +82,11 @@ public  class User implements Comparable<User> {
     @OneToOne(mappedBy = "user")
     private Employee employee;
 
+    @JsonProperty("isRenting")
+    @Column(name ="is_renting")
+    private boolean isRenting;
+
+
     @Override
     public int compareTo(User o) {
 

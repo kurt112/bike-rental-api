@@ -44,9 +44,10 @@ public class BikeServiceImplementation implements BikeService {
     //available
     @Override
     public List<Bike> data (String search, int page, int size, int status) {
-
+        System.out.println("all data hotdog");
         if(search.equals("all")){
             List<Bike> bikes = bikeRepository.getAllBikes(status);
+            System.out.println("The status " + status);
             apiSettings.initApiSettings(bikes.size(),1,1,bikes.size());
             return bikes;
         }
@@ -145,6 +146,7 @@ public class BikeServiceImplementation implements BikeService {
         bike.setDateCharge(bike.getStartBarrow());
         bike.setLatitude(bike.getParentBike().getLatitude());
         bike.setLongitude(bike.getParentBike().getLongitude());
+        user.setRenting(true);
         customerRepository.saveAndFlush(customer);
         bikeRepository.saveAndFlush(bike);
         return true;
@@ -179,6 +181,7 @@ public class BikeServiceImplementation implements BikeService {
         customerBike.setEndBarrow(endBarrow);
         customerBike.setParentBike(bike);
         customerBike.setBikePictures(null);
+        customerBike.setAvailable(true);
 
         bikeRepository.save(bike);
         bikeRepository.save(customerBike);
@@ -252,8 +255,10 @@ public class BikeServiceImplementation implements BikeService {
         long newQty = parentBike.getQuantity() + 1;
         parentBike.setQuantity(newQty);
         bike.setStatus(Bike.getBikeStatus(NOT_AVAILABLE));
+        user.setRenting(false);
 
 
+        userRepository.save(user);
         bikeRepository.save(bike);
         bikeRepository.save(parentBike);
         return true;

@@ -9,6 +9,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -68,6 +69,7 @@ public class EmployeeController {
 
 
         if(employee.getUser() != null){
+            employee.getUser().setPassword(new BCryptPasswordEncoder().encode(employee.getUser().getPassword()));
             user.setEnabled(true);
             user.setCredentialNotExpired(true);
             user.setAccountNotExpired(true);
