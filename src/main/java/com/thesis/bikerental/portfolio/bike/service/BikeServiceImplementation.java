@@ -44,7 +44,6 @@ public class BikeServiceImplementation implements BikeService {
     //available
     @Override
     public List<Bike> data (String search, int page, int size, int status) {
-        System.out.println("all data hotdog");
         if(search.equals("all")){
             List<Bike> bikes = bikeRepository.getAllBikes(status);
             System.out.println("The status " + status);

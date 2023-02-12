@@ -1,6 +1,8 @@
 package com.thesis.bikerental.portfolio.employee.service;
 
 import com.thesis.bikerental.portfolio.employee.domain.Employee;
+import com.thesis.bikerental.portfolio.notification.domain.Notification;
+import com.thesis.bikerental.portfolio.notification.service.NotificationService;
 import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     private final EmployeeRepository employeeRepository;
     private final ApiSettings apiSettings = new ApiSettings(0,0,0,0,0);
+    private final NotificationService notificationService;
 
     @Override
     public List<Employee> data(String search, int page, int size, int status) {
@@ -32,6 +35,16 @@ public class EmployeeServiceImpl implements EmployeeService{
     public Employee save(Employee employee) {
         try {
             employeeRepository.save(employee);
+            Notification notification = Notification
+                    .builder()
+                    .to(null)
+                    .from(null)
+                    .link("")
+                    .message(employee.getUser().getFirstName() + " " + employee.getUser().getLastName() + " is our new customer!")
+                    .build();
+            notificationService.save(notification);
+
+
         }catch (Exception e) {
             return null;
         }

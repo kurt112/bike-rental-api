@@ -2,6 +2,7 @@ package com.thesis.bikerental.portfolio.user.service;
 
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.utils.api.ServiceGraphQL;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,4 +14,6 @@ public interface UserService extends ServiceGraphQL<User> {
     User findByCellphone(String cellphone);
 
     void validateUser(HashMap<String, Object> validation, User user);
+
+    ResponseEntity<?> isUserRenting(String token);
 }

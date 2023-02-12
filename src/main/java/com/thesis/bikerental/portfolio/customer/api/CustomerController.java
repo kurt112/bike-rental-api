@@ -117,11 +117,14 @@ public class CustomerController {
     @GetMapping("/{userId}")
     public ResponseEntity<?> getBill(@PathVariable("userId") Long id){
 
-        System.out.println("The id "+  id);
-
         return customerService.getUserBill(id);
     }
 
+    @GetMapping("/{token}/isRenting")
+    public ResponseEntity<?> isUserRenting(@PathVariable("token") String token){
+
+        return userService.isUserRenting(token);
+    }
 
     @SchemaMapping(typeName = "Query",value = "customers")
     public List<Customer> getAllBike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){

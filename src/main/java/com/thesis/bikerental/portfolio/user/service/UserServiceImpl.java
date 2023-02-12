@@ -1,6 +1,7 @@
 package com.thesis.bikerental.portfolio.user.service;
 
 import com.thesis.bikerental.portfolio.user.domain.User;
+import com.thesis.bikerental.utils.Jwt;
 import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
-
+    private final Jwt jwt;
     @Override
     public List<User> data(String search, int page, int size, int status) {
         return null;
@@ -79,5 +80,16 @@ public class UserServiceImpl implements UserService{
         if(currentUserCellphone != null && currentUserCellphone.getId() != user.getId()){
             validation.put("cellphone","Cellphone number must be unique");
         }
+    }
+
+    @Override
+    public ResponseEntity<?>  isUserRenting(String token) {
+        HashMap<String , Object> result = new HashMap<>();
+        String email = jwt.getUsername(token);
+        User user = userRepository.findFirstByEmail(email);
+        boolean isRenting = user.isRenting();
+        result.put("data", isRenting);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
