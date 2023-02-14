@@ -143,7 +143,7 @@ public class BikeController {
     @PostMapping("/request/rejected")
     public ResponseEntity<?> rejectRequest(@RequestParam("userId") long userId, @RequestParam("bikeId") long bikeId){
         HashMap<String, Object> result = new HashMap<>();
-
+        System.out.println("I am in request rejected");
         if(!bikeService.rejectBikeRequest(userId,bikeId)){
             result.putIfAbsent("data", "bike reject invalid");
             return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);

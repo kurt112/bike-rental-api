@@ -256,6 +256,8 @@ public class BikeServiceImplementation implements BikeService {
         bike.setStatus(Bike.getBikeStatus(NOT_AVAILABLE));
         user.setRenting(false);
 
+        System.out.println("i am interminating");
+
 
         userRepository.save(user);
         bikeRepository.save(bike);
