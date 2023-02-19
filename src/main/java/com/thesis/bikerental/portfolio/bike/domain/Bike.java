@@ -2,6 +2,7 @@ package com.thesis.bikerental.portfolio.bike.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
+import com.thesis.bikerental.portfolio.customer.domain.CustomerReceipt;
 import com.thesis.bikerental.portfolio.store.domain.Store;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -89,6 +90,8 @@ public class Bike implements Comparable<Bike>, Cloneable{
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCharge;
 
+    @OneToOne(mappedBy = "bike", cascade = CascadeType.ALL)
+    private CustomerReceipt customerReceipt;
     @Override
     public int compareTo(Bike bike) {
         return (int)this.id - (int)bike.getId();

@@ -3,6 +3,8 @@ package com.thesis.bikerental.portfolio.bike.service;
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.domain.BikePicture;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
+import com.thesis.bikerental.portfolio.customer.domain.CustomerReceipt;
+import com.thesis.bikerental.portfolio.customer.service.CustomerReceiptService;
 import com.thesis.bikerental.portfolio.customer.service.CustomerRepository;
 import com.thesis.bikerental.portfolio.notification.domain.Notification;
 import com.thesis.bikerental.portfolio.notification.service.NotificationService;
@@ -36,6 +38,8 @@ public class BikeServiceImplementation implements BikeService {
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final CustomerReceiptService customerReceiptService;
+
 
     private final Jwt jwt;
 
@@ -161,6 +165,12 @@ public class BikeServiceImplementation implements BikeService {
 
         if(user == null) return false;
 
+        Bike currentRequestBike = customerReceiptService.getRequestBikeCustomer(user.getCustomer().getId());
+
+        if(currentRequestBike != null){
+            return false;
+        }
+
         Bike bike = bikeRepository.findById(bikeId).orElse(null);
 
         if(bike == null) return false;
@@ -256,12 +266,13 @@ public class BikeServiceImplementation implements BikeService {
         bike.setStatus(Bike.getBikeStatus(NOT_AVAILABLE));
         user.setRenting(false);
 
-        System.out.println("i am interminating");
-
+        CustomerReceipt customerReceipt = bike.getCustomerReceipt();
+        customerReceipt.setActive(false);
 
         userRepository.save(user);
         bikeRepository.save(bike);
         bikeRepository.save(parentBike);
+        customerReceiptService.save(customerReceipt);
         return true;
     }
 

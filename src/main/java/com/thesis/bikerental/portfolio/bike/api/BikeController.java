@@ -103,7 +103,6 @@ public class BikeController {
                                                   @RequestBody Bike bike) {
         HashMap<String, Object> result = new HashMap<>();
 
-
         if(!bikeService.requestBikeByCustomer(token, bikeId,bike, start,end)){
             result.putIfAbsent("data", "bike request invalid");
             return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);

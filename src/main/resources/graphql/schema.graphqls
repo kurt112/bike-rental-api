@@ -23,6 +23,7 @@ type Bike {
     parentBike: Bike,
     longitude: String,
     latitude: String,
+    customerReceipt: CustomerReceipt
 }
 
 type User {

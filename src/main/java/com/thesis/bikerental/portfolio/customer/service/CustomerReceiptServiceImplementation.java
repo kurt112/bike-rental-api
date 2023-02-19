@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class CustomerReceiptServiceImplementation implements CustomerReceiptServ
 
     @Override
     public List<CustomerReceipt> data(String search, int page, int size, int status) {
-        Pageable pageable = PageRequest.of(page-1,size);
+        Pageable pageable = PageRequest.of(page-1,size,Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<CustomerReceipt> pages = customerReceiptRepository.findAll(pageable);
         System.out.println(pages.getTotalElements());
         apiSettings.initApiSettings(size,page,pages.getTotalPages(),pages.getTotalElements());
@@ -32,10 +32,9 @@ public class CustomerReceiptServiceImplementation implements CustomerReceiptServ
     @Override
     public CustomerReceipt save(CustomerReceipt customerReceipt) {
         try {
-            Bike bike = customerReceiptRepository.getRequestBikeCustomer(customerReceipt.getCustomer().getId());
-            System.out.println(bike);
-            System.out.println("the bike " + bike);
+            Bike bike = getRequestBikeCustomer(customerReceipt.getCustomer().getId());
             customerReceipt.setBike(bike);
+            customerReceipt.setActive(true);
             customerReceiptRepository.save(customerReceipt);
         }catch (Exception e){
             e.printStackTrace();
@@ -70,5 +69,10 @@ public class CustomerReceiptServiceImplementation implements CustomerReceiptServ
     @Override
     public long count() {
         return 0;
+    }
+
+    @Override
+    public Bike getRequestBikeCustomer(long id) {
+        return customerReceiptRepository.getRequestBikeCustomer(id);
     }
 }

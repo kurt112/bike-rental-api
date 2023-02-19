@@ -1,5 +1,6 @@
 package com.thesis.bikerental.portfolio.customer.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,12 +26,16 @@ public class CustomerReceipt {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "bike_id")
     private Bike bike;
 
     @Column(name = "picture")
     private String picture;
+
+    @JsonProperty("isActive")
+    @Column(name = "is_active")
+    private boolean isActive;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
