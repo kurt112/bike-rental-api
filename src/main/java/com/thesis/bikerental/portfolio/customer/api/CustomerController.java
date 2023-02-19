@@ -3,9 +3,12 @@ package com.thesis.bikerental.portfolio.customer.api;
 import com.thesis.bikerental.portfolio.bike.domain.Bike;
 import com.thesis.bikerental.portfolio.bike.service.BikeService;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
+import com.thesis.bikerental.portfolio.customer.domain.CustomerReceipt;
+import com.thesis.bikerental.portfolio.customer.service.CustomerReceiptService;
 import com.thesis.bikerental.portfolio.customer.service.CustomerService;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserService;
+import com.thesis.bikerental.utils.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -25,6 +28,8 @@ public class CustomerController {
     private final CustomerService customerService;
     private final UserService userService;
     private final BikeService bikeService;
+    private final CustomerReceiptService customerReceiptService;
+    private final Jwt jwt;
 
     @PatchMapping
     public ResponseEntity<HashMap<String, ?>> updateCustomer(@RequestBody Customer customer){
@@ -100,6 +105,17 @@ public class CustomerController {
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
+    @GetMapping("/receipt/settings")
+    public ResponseEntity<?> receiptSettings() {
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.putIfAbsent("data", customerReceiptService.apiSettings());
+
+
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+
     @PostMapping("/rented")
     public List<Bike> getAllBikeRentedByCustomer(@Argument String search, @Argument int page, @Argument int size, @Argument int status, @Argument String token) {
 
@@ -126,26 +142,46 @@ public class CustomerController {
         return userService.isUserRenting(token);
     }
 
+    @PostMapping("/receipt")
+    public ResponseEntity<?> uploadReceipt(@RequestParam("picture") String picturePath,
+                                           @RequestParam("token") String token){
+        HashMap<String ,Object> result = new HashMap<>();
+        String email = jwt.getUsername(token);
+
+        User user = userService.findByEmail(email);
+        if(user == null) {
+            result.put("data", "User can't find");
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        CustomerReceipt receipt = CustomerReceipt
+                .builder()
+                .customer(user.getCustomer())
+                .bike(null)
+                .picture(picturePath)
+                .build();
+
+        customerReceiptService.save(receipt);
+
+        result.put("data", "Bike Receipt Success");
+
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
     @SchemaMapping(typeName = "Query",value = "customers")
     public List<Customer> getAllBike(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
 
         return customerService.data(search,page,size,status);
     }
 
+    @SchemaMapping(typeName = "Query",value = "getCustomerReceipts")
+    public List<CustomerReceipt> getCustomerReceipts(@Argument String search, @Argument int page, @Argument int size, @Argument int status){
+
+        return customerReceiptService.data(search,page,size,status);
+    }
 
     @SchemaMapping(typeName = "Query",value = "customerById")
     public Customer getCustomerById(@Argument long id){
 
         return customerService.findById(id);
     }
-
-    private void validateUser () {
-
-    }
-
-
-
-
-
-
 }

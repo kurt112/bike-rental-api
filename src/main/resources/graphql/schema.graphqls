@@ -84,6 +84,14 @@ type Notification {
     createdAt: String
 }
 
+type CustomerReceipt {
+    id: ID!,
+    customer: Customer,
+    bike: Bike,
+    picture: String,
+    createdAt: String
+    updatedAt: String
+}
 
 type Query {
     bikes(search:String, page: Int, size: Int, status: Int): [Bike]
@@ -96,4 +104,5 @@ type Query {
     employeeById(id:ID!):Employee
     getBikeByCustomer(search:String, token: String):[Bike],
     getNotifications(size: Int, page: Int,token: String): [Notification]
+    getCustomerReceipts(search:String, page: Int, size: Int, status: Int): [CustomerReceipt]
 }

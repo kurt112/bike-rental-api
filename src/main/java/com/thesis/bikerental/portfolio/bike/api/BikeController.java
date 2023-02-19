@@ -176,7 +176,7 @@ public class BikeController {
 
         HashMap<String, Object> result = new HashMap<>();
         bikeService.updateBikeLocationByUser(token,longitude,latitude);
-        System.out.println("updating location");
+//        System.out.println("updating location");
         result.put("data", "bike location updated");
         return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
     }
