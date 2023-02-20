@@ -5,12 +5,15 @@ import com.thesis.bikerental.portfolio.user.service.UserDetailsService;
 import com.thesis.bikerental.portfolio.user.service.UserService;
 import com.thesis.bikerental.utils.Jwt;
 import lombok.RequiredArgsConstructor;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,5 +62,13 @@ public class AuthController {
         HashMap<String, String> result = new HashMap<>();
 
         return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+    }
+    @SchemaMapping(typeName = "Query",value = "getUserById")
+    public com.thesis.bikerental.portfolio.user.domain.User getUserByToken(@Argument String token){
+
+        String email = jwt.getUsername(token);
+        com.thesis.bikerental.portfolio.user.domain.User user = userService.findByEmail(email);
+
+        return user;
     }
 }

@@ -44,6 +44,8 @@ type User {
     createdAt: String
     updatedAt: String
     isRenting: Boolean
+    customer: Customer,
+    employee: Employee
 }
 
 type Customer {
@@ -106,4 +108,5 @@ type Query {
     getBikeByCustomer(search:String, token: String):[Bike],
     getNotifications(size: Int, page: Int,token: String): [Notification]
     getCustomerReceipts(search:String, page: Int, size: Int, status: Int): [CustomerReceipt]
+    getUserById(token: String): User
 }
