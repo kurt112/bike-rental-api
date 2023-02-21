@@ -69,7 +69,7 @@ public class EmployeeController {
 
 
         if(employee.getUser() != null){
-            employee.getUser().setPassword(new BCryptPasswordEncoder().encode(employee.getUser().getPassword()));
+            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
             user.setEnabled(true);
             user.setCredentialNotExpired(true);
             user.setAccountNotExpired(true);

@@ -1,6 +1,7 @@
 
 package com.thesis.bikerental.portfolio.employee.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thesis.bikerental.portfolio.store.domain.Store;
 import com.thesis.bikerental.portfolio.user.domain.User;
@@ -22,6 +23,7 @@ public class Employee implements Comparable<Employee>{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
