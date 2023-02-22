@@ -56,10 +56,12 @@ public class EmployeeController {
 
         HashMap<String ,Object> hashMap = new HashMap<>();
 
+        System.out.println(employee.getUser());
+
         User user = employee.getUser();
 
         if(user == null){
-            hashMap.put("message","Customer user does not exist");
+            hashMap.put("message","Employee user does not exist");
             return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
         }
 

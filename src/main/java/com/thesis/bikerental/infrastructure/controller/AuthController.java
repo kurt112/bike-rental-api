@@ -48,6 +48,7 @@ public class AuthController {
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(credentials.getUsername());
         userDetailsService.getUser().setCustomer(null);
+        userDetailsService.getUser().setEmployee(null);
         final String jwt = this.jwt.generateToken(userDetails, false);
         result.put("token", jwt);
         result.put("message", "Login Successful");

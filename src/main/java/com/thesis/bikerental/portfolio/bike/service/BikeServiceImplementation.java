@@ -50,7 +50,6 @@ public class BikeServiceImplementation implements BikeService {
     public List<Bike> data (String search, int page, int size, int status) {
         if(search.equals("all")){
             List<Bike> bikes = bikeRepository.getAllBikes(status);
-            System.out.println("The status " + status);
             apiSettings.initApiSettings(bikes.size(),1,1,bikes.size());
             return bikes;
         }
