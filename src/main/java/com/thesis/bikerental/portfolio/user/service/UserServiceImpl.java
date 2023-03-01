@@ -92,4 +92,20 @@ public class UserServiceImpl implements UserService{
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<?> uploadValidId(long userId, String validId) {
+        User user = findById(userId);
+        HashMap<String , Object> result = new HashMap<>();
+
+        if(user == null){
+            result.put("data", "User Not Found");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+
+        user.setValidIdPhoto(validId);
+        result.put("data", "Valid Id Added");
+        userRepository.save(user);
+        return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+    }
 }

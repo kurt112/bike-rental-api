@@ -28,7 +28,7 @@ public class BikeController {
         HashMap<String, Object> content =  new HashMap<>();
 
         Store store = storeService.findById(storeId);
-
+        bike.setBikePictures(null);
         if(store ==null) {
             content.put("data", "No Store Found");
             return new ResponseEntity<>(content,HttpStatus.BAD_REQUEST);

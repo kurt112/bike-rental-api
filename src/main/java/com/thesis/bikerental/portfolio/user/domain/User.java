@@ -86,6 +86,8 @@ public  class User implements Comparable<User> {
     @Column(name ="is_renting")
     private boolean isRenting;
 
+    private String validIdPhoto;
+
 
     @Override
     public int compareTo(User o) {

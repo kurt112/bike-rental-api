@@ -37,8 +37,6 @@ public class CustomerController {
 
         User user = customer.getUser();
 
-        System.out.println("i am here");
-
         if(user == null){
             hashMap.put("message","Customer user does not exist");
             return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
@@ -92,6 +90,7 @@ public class CustomerController {
 
         customer.setActive(true);
         customerService.save(customer);
+        hashMap.put("userId", user.getId());
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 

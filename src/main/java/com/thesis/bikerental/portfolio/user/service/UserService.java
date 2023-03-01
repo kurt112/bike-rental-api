@@ -16,4 +16,6 @@ public interface UserService extends ServiceGraphQL<User> {
     void validateUser(HashMap<String, Object> validation, User user);
 
     ResponseEntity<?> isUserRenting(String token);
+
+    ResponseEntity<?> uploadValidId(long userId, String validId);
 }

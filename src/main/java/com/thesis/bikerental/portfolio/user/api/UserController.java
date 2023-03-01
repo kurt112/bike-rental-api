@@ -1,15 +1,15 @@
 package com.thesis.bikerental.portfolio.user.api;
 
 import com.thesis.bikerental.portfolio.user.domain.User;
-import com.thesis.bikerental.portfolio.user.service.UserServiceImpl;
+import com.thesis.bikerental.portfolio.user.service.UserService;
+import com.thesis.bikerental.utils.Jwt;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.HashMap;
 
 @RequiredArgsConstructor
@@ -17,7 +17,8 @@ import java.util.HashMap;
 @RequestMapping("/user")
 public class UserController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
+    private final Jwt jwt;
 
     @PatchMapping
     public ResponseEntity<HashMap<String, ?>> updateUser(@RequestBody User user){
@@ -28,4 +29,9 @@ public class UserController {
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<?> uploadValidIdUser(@RequestParam("userID") long id, @RequestParam("validID") String validID){
+
+        return userService.uploadValidId(id, validID);
+    }
 }

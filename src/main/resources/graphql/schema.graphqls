@@ -46,6 +46,7 @@ type User {
     isRenting: Boolean
     customer: Customer,
     employee: Employee
+    validIdPhoto: String
 }
 
 type Customer {
