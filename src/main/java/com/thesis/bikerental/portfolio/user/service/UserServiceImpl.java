@@ -6,6 +6,8 @@ import com.thesis.bikerental.utils.api.ApiSettings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -107,5 +109,28 @@ public class UserServiceImpl implements UserService{
         result.put("data", "Valid Id Added");
         userRepository.save(user);
         return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+    }
+
+    @Override
+    public ResponseEntity<?> updatePassword(String token, String currentPassword, String newPassword) {
+
+        HashMap<String , Object> result = new HashMap<>();
+
+        String email = jwt.getUsername(token);
+        String encryptedNewPass = new BCryptPasswordEncoder().encode(newPassword);
+
+        User user = findByEmail(email);
+
+
+        if(!BCrypt.checkpw(currentPassword, user.getPassword())){
+            result.put("message", "Current password does not match");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+
+        user.setPassword(encryptedNewPass);
+        userRepository.save(user);
+        result.put("message", "Password change successful");
+        return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+
     }
 }

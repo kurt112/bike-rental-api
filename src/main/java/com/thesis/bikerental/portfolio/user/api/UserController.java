@@ -3,7 +3,6 @@ package com.thesis.bikerental.portfolio.user.api;
 import com.thesis.bikerental.portfolio.user.domain.User;
 import com.thesis.bikerental.portfolio.user.service.UserService;
 import com.thesis.bikerental.utils.Jwt;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,4 +33,17 @@ public class UserController {
 
         return userService.uploadValidId(id, validID);
     }
+
+
+
+    @PatchMapping("/password/{token}")
+    public ResponseEntity<?> UpdatePasswordUser(@RequestParam("newPass") String newPass,
+                                                @RequestParam("currentPass") String currentPass,
+                                                @PathVariable("token") String token
+    ){
+
+        return userService.updatePassword(token,currentPass,newPass);
+    }
+
+
 }

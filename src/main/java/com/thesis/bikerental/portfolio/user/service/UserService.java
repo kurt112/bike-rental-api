@@ -18,4 +18,6 @@ public interface UserService extends ServiceGraphQL<User> {
     ResponseEntity<?> isUserRenting(String token);
 
     ResponseEntity<?> uploadValidId(long userId, String validId);
+
+    ResponseEntity<?> updatePassword(String token, String currentPassword, String newPassword);
 }
