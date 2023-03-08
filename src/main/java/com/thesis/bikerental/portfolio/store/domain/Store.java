@@ -46,6 +46,12 @@ public class Store implements Comparable<Store> {
     @OneToMany(mappedBy = "currentAssign")
     private Set<Employee> employees;
 
+    private String paymaya;
+    private String gcash;
+    private String bdo;
+    private String bpi;
+    private String securityBank;
+
 //    @OneToMany(mappedBy = "store")
 //    private Set<Bike> bikes;
 

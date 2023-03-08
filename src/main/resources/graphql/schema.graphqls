@@ -75,7 +75,12 @@ type Store {
     latitude: String
     radius: String
     scopeColor:String,
-    scopeEdgeColor: String
+    scopeEdgeColor: String,
+    paymaya: String,
+    gcash: String,
+    bdo: String,
+    bpi: String,
+    securityBank: String
 }
 
 type Notification {
