@@ -266,12 +266,15 @@ public class BikeServiceImplementation implements BikeService {
         user.setRenting(false);
 
         CustomerReceipt customerReceipt = bike.getCustomerReceipt();
-        customerReceipt.setActive(false);
+        if(customerReceipt != null){
+            customerReceipt.setActive(false);
+            customerReceiptService.save(customerReceipt);
+        }
+
 
         userRepository.save(user);
         bikeRepository.save(bike);
         bikeRepository.save(parentBike);
-        customerReceiptService.save(customerReceipt);
         return true;
     }
 
