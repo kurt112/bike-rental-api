@@ -62,6 +62,10 @@ public class CustomerController {
 
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
+    @PostMapping("/payment")
+    public ResponseEntity<?>  customerPayment(@RequestParam("email") String email, @RequestParam("payment") double payment, @RequestParam("token") String token) {
+        return customerService.customerPay(email,payment, token);
+    }
 
     @PostMapping
     public ResponseEntity<HashMap<String, ?>> createCustomer(@RequestBody Customer customer){
@@ -128,7 +132,6 @@ public class CustomerController {
 
         return bikeService.data(search,page,size,status);
     }
-
     @GetMapping("/{userId}")
     public ResponseEntity<?> getBill(@PathVariable("userId") Long id){
 

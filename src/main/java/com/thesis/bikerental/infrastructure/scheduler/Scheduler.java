@@ -23,7 +23,7 @@ public class Scheduler {
 
 
 
-//    @Scheduled(fixedRate = 15_000) // 5 minutes  will re-run this and billed the customer
+    @Scheduled(fixedRate = 15_000) // 5 minutes  will re-run this and billed the customer
     public void chargeCustomerBike() {
         List<Bike> bikeList = bikeRepository.getBikeWithCustomer();
         for(Bike bike: bikeList){
@@ -68,7 +68,8 @@ public class Scheduler {
                             .date(bikeTargetCharge.getTime())
                             .build();
                     currentBill += bikePricePerFifteenMinutes;
-//                    transactionRepository.saveAndFlush(transaction);
+                    System.out.println("charging customer");
+                    transactionRepository.saveAndFlush(transaction);
                     bikeTargetCharge.add(Calendar.MINUTE, 15);
                 }
 

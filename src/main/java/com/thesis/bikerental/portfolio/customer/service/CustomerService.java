@@ -9,4 +9,6 @@ import org.springframework.stereotype.Service;
 public interface CustomerService extends ServiceGraphQL<Customer> {
     ResponseEntity<?> getUserBill(Long userId);
 
+    ResponseEntity<?> customerPay(String email, double payment, String token);
+
 }
