@@ -6,6 +6,9 @@ import com.thesis.bikerental.portfolio.charge.domain.Transaction;
 import com.thesis.bikerental.portfolio.charge.service.TransactionRepository;
 import com.thesis.bikerental.portfolio.customer.domain.Customer;
 import com.thesis.bikerental.portfolio.customer.service.CustomerRepository;
+import com.thesis.bikerental.portfolio.notification.domain.Notification;
+import com.thesis.bikerental.portfolio.notification.service.NotificationService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,13 +23,14 @@ public class Scheduler {
     private final CustomerRepository customerRepository;
     private final BikeRepository bikeRepository;
     private final TransactionRepository transactionRepository;
-
+    private final NotificationService notificationService;
 
 
     @Scheduled(fixedRate = 15_000) // 5 minutes  will re-run this and billed the customer
     public void chargeCustomerBike() {
         List<Bike> bikeList = bikeRepository.getBikeWithCustomer();
         for(Bike bike: bikeList){
+            System.out.println(bikeList.size());
             Customer customer = bike.getAssignedCustomer();
 
             /**
@@ -44,6 +48,10 @@ public class Scheduler {
             Calendar bikeTargetCharge = Calendar.getInstance();
             bikeTargetCharge.setTime(bike.getDateCharge());
 
+            // get the target billed for current bike
+            Calendar bikeEndBarrow = Calendar.getInstance();
+            bikeEndBarrow.setTime(bike.getEndBarrow());
+
 
             Calendar customerTargetNextBilled = Calendar.getInstance();
             customerTargetNextBilled.setTime(customer.getNextBilled());
@@ -54,8 +62,10 @@ public class Scheduler {
                 customerRepository.saveAndFlush(customer);
             }
 
+            System.out.println(bikeTargetCharge.getTime());
+            System.out.println("end barrow");
+            System.out.println(bikeEndBarrow.getTime());
             if(currentTime.compareTo(bikeTargetCharge) > 0){
-
                 while (currentTime.compareTo(bikeTargetCharge) >=0) {
                     Transaction transaction = Transaction
                             .builder()
@@ -68,13 +78,27 @@ public class Scheduler {
                             .date(bikeTargetCharge.getTime())
                             .build();
                     currentBill += bikePricePerFifteenMinutes;
-                    System.out.println("charging customer");
                     transactionRepository.saveAndFlush(transaction);
                     bikeTargetCharge.add(Calendar.MINUTE, 15);
                 }
 
+                System.out.println(currentTime.compareTo(bikeEndBarrow));
+                
+                if(currentTime.compareTo(bikeEndBarrow) >0){
+                    Notification notification = Notification
+                    .builder()
+                    .to(customer.getUser())
+                    .from(null)
+                    .link("")
+                    .message("Your'e next charge will be 15/hr due date is coming please return your bike immediately")
+                    .build();
+                    notificationService.save(notification);
+                    System.out.println("overcharge!");
+                    System.out.println(bike.getId());
+                }
 
                 bike.setDateCharge(bikeTargetCharge.getTime());
+                bike.setPrice(60);
                 bikeRepository.saveAndFlush(bike);
 
                 customer.setToPay(currentBill);

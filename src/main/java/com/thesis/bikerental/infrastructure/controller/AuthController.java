@@ -31,7 +31,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest credentials){
-
+        System.out.println("ajsdfkljajsdf");
         HashMap<String, Object> result = new HashMap<>();
 
         try {
